@@ -13,6 +13,7 @@ UCLASS()
 class OJTPROJECT_API ALobbyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
 public:
 	ALobbyGameMode();
 

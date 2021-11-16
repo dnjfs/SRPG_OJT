@@ -18,16 +18,16 @@ public:
 	UFUNCTION()
 	void OnOpenLevel1Clicked();
 
+	UFUNCTION()
+	void OnOpenLevel2Clicked();
+
 protected:
 	virtual void NativeConstruct() override;
 
 private:
-	//UPROPERTY()
-	//class UTextBlock* LobbyText;
-
 	UPROPERTY()
 	class UButton* Level1;
 
-	//UPROPERTY()
-	//class UButton* Level2;
+	UPROPERTY()
+	class UButton* Level2;
 };

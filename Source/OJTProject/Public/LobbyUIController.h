@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "OJTProject.h"
 #include "GameFramework/PlayerController.h"
 #include "LobbyUIController.generated.h"
 
@@ -13,5 +13,16 @@ UCLASS()
 class OJTPROJECT_API ALobbyUIController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	ALobbyUIController();
+
+protected:
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> UIWidgetClass;
+
+	UPROPERTY()
+		class UUserWidget* UIWidgetInstance;
 };
