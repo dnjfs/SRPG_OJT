@@ -7,7 +7,7 @@
 
 ALobbyUIController::ALobbyUIController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_LOBBY(TEXT("/Game/UMG/UI_Lobby.UI_Lobby_C"));
+	static ConstructorHelpers::FClassFinder<ULobbyWidget> UI_LOBBY(TEXT("/Game/UMG/UI_Lobby.UI_Lobby_C")); //UUserWidget으로 받아야하나 ULobbyWidget으로 받아야하나..
 	if(UI_LOBBY.Succeeded())
 	{
 		UIWidgetClass = UI_LOBBY.Class;

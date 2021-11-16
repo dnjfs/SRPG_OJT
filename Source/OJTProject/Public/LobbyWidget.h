@@ -22,7 +22,7 @@ public:
 	void OnOpenLevel2Clicked();
 
 protected:
-	virtual void NativeConstruct() override;
+	virtual void NativeConstruct() override; //BeginPlay()와 비슷한 용도
 
 private:
 	UPROPERTY()
