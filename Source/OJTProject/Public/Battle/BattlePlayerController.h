@@ -3,19 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "BattleMode.generated.h"
+#include "GameFramework/PlayerController.h"
+#include "BattlePlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OJTPROJECT_API ABattleMode : public AGameModeBase
+class OJTPROJECT_API ABattlePlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-public:
-	ABattleMode();
 
 protected:
 	virtual void BeginPlay() override;

@@ -4,7 +4,7 @@
 #include "Map/TileCell.h"
 
 // Sets default values
-ATileCell::ATileCell()
+ATileCell::ATileCell() : TileID(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,7 +19,7 @@ ATileCell::ATileCell()
 		Cell->SetStaticMesh(SM_PLANE.Object);
 	}
 
-	Cell->SetRelativeScale3D(FVector(2.0f, 2.0f, 1.0f));
+	Cell->SetRelativeScale3D(FVector(1.9f, 1.9f, 1.0f));
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +27,7 @@ void ATileCell::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UE_LOG(LogTemp, Log, TEXT("Tile%d Spawned."), TileID);
 }
 
 // Called every frame
@@ -36,3 +37,7 @@ void ATileCell::Tick(float DeltaTime)
 
 }
 
+void ATileCell::SetTileID(int ID)
+{
+	TileID = ID;
+}
