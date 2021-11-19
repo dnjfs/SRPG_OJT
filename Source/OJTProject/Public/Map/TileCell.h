@@ -25,6 +25,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void SetTileID(int ID);
 
+	UFUNCTION()
+	void PrintName(AActor* TileActor);
+	UFUNCTION()
+	void PrintName2(AActor* TileActor, FKey TileKey);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Cell;

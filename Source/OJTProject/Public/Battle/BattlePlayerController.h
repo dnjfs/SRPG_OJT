@@ -16,4 +16,8 @@ class OJTPROJECT_API ABattlePlayerController : public APlayerController
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+
+public:
+	void OnClickTile();
 };

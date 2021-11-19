@@ -20,14 +20,24 @@ ATileCell::ATileCell() : TileID(0)
 	}
 
 	Cell->SetRelativeScale3D(FVector(1.9f, 1.9f, 1.0f));
+
+	OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
+	OnClicked.AddDynamic(this, &ATileCell::PrintName2);
+}
+
+void ATileCell::PrintName(AActor* TileActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TileOver %d"), TileID);
+}
+void ATileCell::PrintName2(AActor* TileActor, FKey TileKey)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
 }
 
 // Called when the game starts or when spawned
 void ATileCell::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	UE_LOG(LogTemp, Log, TEXT("Tile%d Spawned."), TileID);
 }
 
 // Called every frame
