@@ -14,7 +14,7 @@ class OJTPROJECT_API ATileCell : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATileCell();
-	~ATileCell() { UE_LOG(LogTemp, Warning, TEXT("Deleted Tile%d"), TileID); }
+	virtual ~ATileCell() { UE_LOG(LogTemp, Warning, TEXT("Deleted Tile%d"), TileID); }
 
 protected:
 	// Called when the game starts or when spawned
