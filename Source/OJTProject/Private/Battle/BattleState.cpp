@@ -45,8 +45,11 @@ void ABattleState::SpawnTiles()
 		for (int x = 0; x < BattleColumn; ++x)
 		{
 			//world->SpawnActor<ATileCell>(floorLoc, FRotator::ZeroRotator);
-			TileMap.Add(world->SpawnActor<ATileCell>(floorLoc + FVector(200*x, 200*y, 0), FRotator::ZeroRotator)); //액터 생성
-			TileMap.Last()->SetTileID(tID++); //ID 지정
+			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
+			tile->SetTileID(tID++); //ID 지정
+			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
+			TileMap.Add(tile); //액터 생성
+			//TileMap.Last()->SetTileID(tID++);
 		}
 		tID /= 10;
 		tID++;
