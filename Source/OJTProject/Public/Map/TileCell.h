@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TileCell.generated.h"
 
@@ -14,7 +14,7 @@ class OJTPROJECT_API ATileCell : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATileCell();
-	virtual ~ATileCell() { UE_LOG(LogTemp, Warning, TEXT("Deleted Tile%d"), TileID); }
+	virtual ~ATileCell() { /*UE_LOG(LogTemp, Warning, TEXT("Deleted Tile%d"), TileID);*/ }
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +29,8 @@ public:
 	void PrintName(AActor* TileActor);
 	UFUNCTION()
 	void PrintName2(AActor* TileActor, FKey TileKey);
+	UFUNCTION()
+	void PrintName3(AActor* TileActor, FKey TileKey);
 
 private:
 	UPROPERTY(VisibleAnywhere)

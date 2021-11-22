@@ -10,6 +10,7 @@
 void ABattleState::BeginPlay()
 {
 	Super::BeginPlay();
+	UE_LOG(LogTemp, Warning, TEXT("ABattleState::BeginPlay"));
 
 	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld()); //현재 레벨 이름 불러오기
 	BattleLevel = FCString::Atoi(*(LevelName.Right(1)));

@@ -23,6 +23,10 @@ ATileCell::ATileCell() : TileID(0)
 
 	OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
 	OnClicked.AddDynamic(this, &ATileCell::PrintName2);
+	OnReleased.AddDynamic(this, &ATileCell::PrintName3);
+
+	//UE_LOG(LogTemp, Warning, TEXT("Complete Construct"));
+	//OnClicked.Broadcast(this, FKey(""));
 }
 
 void ATileCell::PrintName(AActor* TileActor)
@@ -32,6 +36,10 @@ void ATileCell::PrintName(AActor* TileActor)
 void ATileCell::PrintName2(AActor* TileActor, FKey TileKey)
 {
 	UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
+}
+void ATileCell::PrintName3(AActor* TileActor, FKey TileKey)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TileRelease %d"), TileID);
 }
 
 // Called when the game starts or when spawned

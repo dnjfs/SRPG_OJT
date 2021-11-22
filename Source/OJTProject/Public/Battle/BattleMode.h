@@ -17,6 +17,9 @@ class OJTPROJECT_API ABattleMode : public AGameModeBase
 public:
 	ABattleMode();
 
+	virtual void PostInitializeComponents() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 protected:
 	virtual void BeginPlay() override;
 };

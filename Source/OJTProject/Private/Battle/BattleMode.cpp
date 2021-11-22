@@ -2,20 +2,40 @@
 
 
 #include "Battle/BattleMode.h"
+#include "Battle/BattlePawn.h"
 #include "Battle/BattlePlayerController.h"
 #include "Battle/BattleState.h"
 #include "Battle/BattlePlayerState.h"
 
 ABattleMode::ABattleMode()
 {
-	DefaultPawnClass = NULL;
+	//DefaultPawnClass = NULL;
+	DefaultPawnClass = ABattlePawn::StaticClass();
 	PlayerControllerClass = ABattlePlayerController::StaticClass();
 	GameStateClass = ABattleState::StaticClass();
 	PlayerStateClass = ABattlePlayerState::StaticClass();
+
+	UE_LOG(LogTemp, Warning, TEXT("ABattleMode::Constructor()"));
+}
+
+void ABattleMode::PostInitializeComponents()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ABattleMode::PostInitializeComponents"));
+	Super::PostInitializeComponents();
+	UE_LOG(LogTemp, Warning, TEXT("2ABattleMode::PostInitializeComponents"));
+}
+
+void ABattleMode::PostLogin(APlayerController* NewPlayer)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ABattleMode::PostLogin / NewPlayer: %s"), *NewPlayer->GetName());
+	Super::PostLogin(NewPlayer);
+
+	UE_LOG(LogTemp, Warning, TEXT("2ABattleMode::PostLogin / NewPlayer: %s"), *NewPlayer->GetName());
 }
 
 void ABattleMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UE_LOG(LogTemp, Warning, TEXT("ABattleMode::BeginPlay / PC: %s"), *PlayerControllerClass->GetName());
 }

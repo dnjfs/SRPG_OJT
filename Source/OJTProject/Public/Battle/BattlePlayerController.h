@@ -15,9 +15,15 @@ class OJTPROJECT_API ABattlePlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 	virtual void SetupInputComponent() override;
+	virtual void BeginPlay() override;
 
 public:
+	ABattlePlayerController();
+	virtual void OnPossess(APawn* aPawn) override;
 	void OnClickTile();
+
+private:
+	FInputModeGameAndUI GameAndUIInputMode;
 };

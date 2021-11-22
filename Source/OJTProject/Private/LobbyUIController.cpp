@@ -38,3 +38,9 @@ void ALobbyUIController::BeginPlay()
 	SetInputMode(Mode);
 	bShowMouseCursor = true;
 }
+
+void ALobbyUIController::Destroyed()
+{
+	Super::Destroyed();
+	UE_LOG(LogTemp, Warning, TEXT("Destroyed LobbyUI Controller"));
+}
