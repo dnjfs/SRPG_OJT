@@ -20,6 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 	void SpawnTiles();
+	void SpawnCharacter();
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;

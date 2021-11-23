@@ -23,7 +23,6 @@ void ABattlePawn::PostInitializeComponents()
 void ABattlePawn::BeginPlay()
 {
 	Super::BeginPlay();
-
 	UE_LOG(LogTemp, Warning, TEXT("ABattlePawn::BeginPlay"));
 
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)

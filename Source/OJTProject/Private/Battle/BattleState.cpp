@@ -2,6 +2,7 @@
 
 
 #include "Battle/BattleState.h"
+#include "Battle/BattleCharacter.h"
 #include "Map/MapGameInstance.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
@@ -16,6 +17,7 @@ void ABattleState::BeginPlay()
 	BattleLevel = FCString::Atoi(*(LevelName.Right(1)));
 
 	SpawnTiles(); //타일 스폰
+	SpawnCharacter();
 }
 
 void ABattleState::SpawnTiles()
@@ -55,5 +57,21 @@ void ABattleState::SpawnTiles()
 		tID /= 10;
 		tID++;
 		tID *= 10;
+	}
+}
+
+void ABattleState::SpawnCharacter()
+{
+	int n = 4; //생성할 캐릭터 수
+	for(int i = 0; i < n; i++)
+	{
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[BattleColumn*i]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[(BattleColumn - 1) + (BattleColumn * i)]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
+		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
