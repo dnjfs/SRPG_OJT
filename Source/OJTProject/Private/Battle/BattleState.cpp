@@ -2,7 +2,6 @@
 
 
 #include "Battle/BattleState.h"
-#include "Battle/BattleCharacter.h"
 #include "Map/MapGameInstance.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
@@ -14,10 +13,14 @@ void ABattleState::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("ABattleState::BeginPlay"));
 
 	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld()); //현재 레벨 이름 불러오기
-	BattleLevel = FCString::Atoi(*(LevelName.Right(1)));
+	BattleLevel = FCString::Atoi(*(LevelName.Right(1))); //레벨 이름의 가장 오른쪽 번호 가져오기
+
+	CurrentTile = -1; //선택된 타일이 없음
 
 	SpawnTiles(); //타일 스폰
-	SpawnCharacter();
+	SpawnCharacter(); //캐릭터 스폰
+
+	//OnClicked.AddDynamic(this, &ABattleState::PrintName);
 }
 
 void ABattleState::SpawnTiles()
@@ -40,7 +43,6 @@ void ABattleState::SpawnTiles()
 	FVector floorLoc = Floor->GetActorTransform().GetLocation() + FVector(-100.0 * (BattleColumn-1), -100.0 * (BattleRow -1), 50); //좌상단 기준
 	UE_LOG(LogTemp, Warning, TEXT("Floor - X: %f, Y: %f"), floorLoc.X, floorLoc.Y);
 
-
 	UWorld* world = GetWorld();
 	int tID = 0;
 	for(int y = 0; y < BattleRow; ++y)
@@ -51,27 +53,83 @@ void ABattleState::SpawnTiles()
 			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
 			tile->SetTileID(tID++); //ID 지정
 			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
+			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
+			tile->OnTileSelecedDelegate.AddDynamic(this, &ABattleState::ClickTile); //델리게이트 연결
+			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
 			TileMap.Add(tile); //액터 생성
-			//TileMap.Last()->SetTileID(tID++);
 		}
 		tID /= 10;
 		tID++;
 		tID *= 10;
 	}
+	/*
+	UWorld* world = GetWorld();
+	int tID = 0;
+	for (int y = 0; y < BattleRow; ++y)
+	{
+		TileRow tileRow;
+		for (int x = 0; x < BattleColumn; ++x)
+		{
+			//world->SpawnActor<ATileCell>(floorLoc, FRotator::ZeroRotator);
+			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
+			tile->SetTileID(tID++); //ID 지정
+			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
+			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
+			tile->OnTileSelecedDelegate.AddDynamic(this, &ABattleState::PrintName); //델리게이트 연결
+			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
+			tileRow.TileLine.Add(tile);
+		}
+		TileMap2.Add(tileRow); //액터 생성
+		tID /= 10;
+		tID++;
+		tID *= 10;
+	}
+	*/
 }
 
 void ABattleState::SpawnCharacter()
 {
 	int n = 4; //생성할 캐릭터 수
-	for(int i = 0; i < n; i++)
+	for(int i = 0; i < n; i++) //캐릭터 생성
 	{
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[BattleColumn*i]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		int32 loc = BattleColumn * i;
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		BTChar->SetActorLabel("Player"+FString::FromInt(i));
+		BTChar->SetLocation(TileMap[loc]->GetTileID());
+		Player.Add(BTChar);
 		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++) //적 생성
 	{
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[(BattleColumn - 1) + (BattleColumn * i)]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
+		int32 loc = (BattleColumn - 1) + (BattleColumn * i);
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
+		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
+		BTChar->SetLocation(TileMap[loc]->GetTileID());
+		Enemy.Add(BTChar);
 		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
+}
+
+void ABattleState::ClickTile(AActor* aActor)
+{
+	int selected = Cast<ATileCell>(aActor)->GetTileID();
+	if(CurrentTile == -1) //선택된 타일이 없는 경우
+	{
+		CurrentTile = selected;
+		Cast<ATileCell>(aActor)->ChangeSMSelected();
+		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
+	}
+	else
+	{
+		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
+		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selected);
+		CurrentTile = -1;
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("TileSelect: %s"), *aActor->GetName());
+}
+
+int ABattleState::CalcTileIndex(int inTileID)
+{
+	return (inTileID/10)*BattleColumn + (inTileID%10);
 }

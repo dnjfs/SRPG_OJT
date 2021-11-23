@@ -4,8 +4,15 @@
 
 #include "OJTProject.h"
 #include "Map/TileCell.h"
+#include "Battle/BattleCharacter.h"
 #include "GameFramework/GameStateBase.h"
 #include "BattleState.generated.h"
+
+//USTRUCT()
+//struct OJTPROJECT_API FTileRow
+//{
+//	TArray<ATileCell*> TileLine;
+//};
 
 /**
  * 
@@ -16,14 +23,26 @@ class OJTPROJECT_API ABattleState : public AGameStateBase
 	GENERATED_BODY()
 	
 public:
-	~ABattleState() { TileMap.Empty(); }
+	~ABattleState() { TileMap.Empty(); } //π∫∞° ¥ı «ÿ¡‡æﬂ «“ ∞Õ ∞∞¿Ω;
 
 	virtual void BeginPlay() override;
 	void SpawnTiles();
 	void SpawnCharacter();
+	
+	UFUNCTION()
+	void ClickTile(AActor* aActor);
+
+	int CalcTileIndex(int inTileID);
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
+	//UPROPERTY()
+	//TArray<FTileRow> TileMap2;
+
+	UPROPERTY()
+	TArray<ABattleCharacter*> Player;
+	UPROPERTY()
+	TArray<ABattleCharacter*> Enemy;
 
 protected:
 	UPROPERTY(Transient)
@@ -34,6 +53,8 @@ protected:
 	
 	UPROPERTY(Transient)
 	int32 BattleColumn;
+
+	int32 CurrentTile;
 
 private:
 	struct FOJTLevelData* CurrentLevelData;

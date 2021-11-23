@@ -31,14 +31,12 @@ ABattleCharacter::ABattleCharacter()
 
 }
 
-// Called when the game starts or when spawned
 void ABattleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void ABattleCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -52,3 +50,12 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+void ABattleCharacter::SetLocation(int onLoc)
+{
+	loc = onLoc;
+}
+
+int32 ABattleCharacter::GetLocation()
+{
+	return loc;
+}

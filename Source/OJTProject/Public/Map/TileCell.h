@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TileCell.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileSelecedDelegate, AActor*, TouchedActor);
+
 UCLASS()
 class OJTPROJECT_API ATileCell : public AActor
 {
@@ -24,18 +26,29 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetTileID(int ID);
+	int GetTileID();
 
 	UFUNCTION()
 	void PrintName(AActor* TileActor);
 	UFUNCTION()
-	void PrintName2(AActor* TileActor, FKey TileKey);
+	void ClickTile(AActor* TileActor, FKey TileKey);
 	UFUNCTION()
 	void PrintName3(AActor* TileActor, FKey TileKey);
+
+	void ChangeSMIdle();
+	void ChangeSMSelected();
+
+	FOnTileSelecedDelegate OnTileSelecedDelegate;
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Cell;
 
 	UPROPERTY()
-	int32 TileID;
+	UStaticMesh* Idle;
+	UPROPERTY()
+	UStaticMesh* Selected;
+
+	UPROPERTY()
+	int32 TileID; //Заї­
 };

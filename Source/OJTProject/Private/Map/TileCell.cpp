@@ -16,14 +16,19 @@ ATileCell::ATileCell() : TileID(0)
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_PLANE(TEXT("StaticMesh'/Game/StaticMesh/Shape_Plane.Shape_Plane'"));
 	if (SM_PLANE.Succeeded())
 	{
-		Cell->SetStaticMesh(SM_PLANE.Object);
+		Idle = SM_PLANE.Object;
+		Cell->SetStaticMesh(Idle);
 	}
 
 	Cell->SetRelativeScale3D(FVector(1.9f, 1.9f, 1.0f));
+	
+	//OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
+	OnClicked.AddDynamic(this, &ATileCell::ClickTile);
+	//OnReleased.AddDynamic(this, &ATileCell::PrintName3);
 
-	OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
-	OnClicked.AddDynamic(this, &ATileCell::PrintName2);
-	OnReleased.AddDynamic(this, &ATileCell::PrintName3);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_SELECTED(TEXT("StaticMesh'/Game/StaticMesh/Plane_Selected.Plane_Selected'"));
+	if (SM_PLANE.Succeeded())
+		Selected = SM_SELECTED.Object;
 
 	//UE_LOG(LogTemp, Warning, TEXT("Complete Construct"));
 	//OnClicked.Broadcast(this, FKey(""));
@@ -33,12 +38,15 @@ void ATileCell::PrintName(AActor* TileActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("TileOver %d"), TileID);
 }
-void ATileCell::PrintName2(AActor* TileActor, FKey TileKey)
+void ATileCell::ClickTile(AActor* TileActor, FKey TileKey)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
+	OnTileSelecedDelegate.Broadcast(TileActor);
+	//Cell->SetStaticMesh(Selected);
+	//UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
 }
 void ATileCell::PrintName3(AActor* TileActor, FKey TileKey)
 {
+	Cell->SetStaticMesh(Idle);
 	UE_LOG(LogTemp, Warning, TEXT("TileRelease %d"), TileID);
 }
 
@@ -58,4 +66,18 @@ void ATileCell::Tick(float DeltaTime)
 void ATileCell::SetTileID(int ID)
 {
 	TileID = ID;
+}
+
+int ATileCell::GetTileID()
+{
+	return TileID;
+}
+
+void ATileCell::ChangeSMIdle()
+{
+	Cell->SetStaticMesh(Idle);
+}
+void ATileCell::ChangeSMSelected()
+{
+	Cell->SetStaticMesh(Selected);
 }

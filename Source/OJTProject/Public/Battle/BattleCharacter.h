@@ -26,4 +26,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SetLocation(int onLoc);
+	int32 GetLocation();
+
+private:
+	int32 loc :1;
 };
