@@ -58,4 +58,5 @@ protected:
 
 private:
 	struct FOJTLevelData* CurrentLevelData;
+	int32 CurrentTurn;
 };

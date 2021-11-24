@@ -26,9 +26,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetLocation(int onLoc);
-	int32 GetLocation();
+	void SetTileLocation(int onLoc);
+	int32 GetTileLocation();
 
 private:
-	int32 loc :1;
+	int32 TileLoc;
+	int32 HP;
+	int32 Power;
 };

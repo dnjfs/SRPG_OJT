@@ -14,21 +14,29 @@ ABattleCharacter::ABattleCharacter()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_MANNEQUIN(TEXT("SkeletalMesh'/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin'"));
 	if (SK_MANNEQUIN.Succeeded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SK Success"));
+		//UE_LOG(LogTemp, Warning, TEXT("SK Success"));
 		GetMesh()->SetSkeletalMesh(SK_MANNEQUIN.Object);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SK Failed"));
 	}
 
 	//AnimInstance 가져오기
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	static ConstructorHelpers::FClassFinder<UAnimInstance> MANNEQUIN_ANIM(TEXT("AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C'"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> MANNEQUIN_ANIM(TEXT("AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C'")); //블루프린트 가져올 땐 _C 붙이기
 	if (MANNEQUIN_ANIM.Succeeded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ANIM Success"));
+		//UE_LOG(LogTemp, Warning, TEXT("ANIM Success"));
 		GetMesh()->SetAnimInstanceClass(MANNEQUIN_ANIM.Class);
 	}
 	else
+	{
 		UE_LOG(LogTemp, Warning, TEXT("ANIM Failed"));
+	}
 
+	HP = 100;
+	Power = 40;
 }
 
 void ABattleCharacter::BeginPlay()
@@ -47,15 +55,15 @@ void ABattleCharacter::Tick(float DeltaTime)
 void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::SetupPlayerInputComponent"));
 }
 
-void ABattleCharacter::SetLocation(int onLoc)
+void ABattleCharacter::SetTileLocation(int onLoc)
 {
-	loc = onLoc;
+	TileLoc = onLoc;
 }
 
-int32 ABattleCharacter::GetLocation()
+int32 ABattleCharacter::GetTileLocation()
 {
-	return loc;
+	return TileLoc;
 }

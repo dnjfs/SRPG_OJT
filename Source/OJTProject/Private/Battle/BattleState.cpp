@@ -16,10 +16,10 @@ void ABattleState::BeginPlay()
 	BattleLevel = FCString::Atoi(*(LevelName.Right(1))); //레벨 이름의 가장 오른쪽 번호 가져오기
 
 	CurrentTile = -1; //선택된 타일이 없음
+	CurrentTurn = 0; //0번째부터 시작
 
 	SpawnTiles(); //타일 스폰
 	SpawnCharacter(); //캐릭터 스폰
-
 	//OnClicked.AddDynamic(this, &ABattleState::PrintName);
 }
 
@@ -95,9 +95,9 @@ void ABattleState::SpawnCharacter()
 		int32 loc = BattleColumn * i;
 		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
-		BTChar->SetLocation(TileMap[loc]->GetTileID());
+		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Player.Add(BTChar);
-		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
+		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
 	for (int i = 0; i < n; i++) //적 생성
@@ -105,9 +105,9 @@ void ABattleState::SpawnCharacter()
 		int32 loc = (BattleColumn - 1) + (BattleColumn * i);
 		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
-		BTChar->SetLocation(TileMap[loc]->GetTileID());
+		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Enemy.Add(BTChar);
-		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
+		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
 

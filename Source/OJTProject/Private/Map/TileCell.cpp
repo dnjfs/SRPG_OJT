@@ -7,9 +7,10 @@
 ATileCell::ATileCell() : TileID(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Cell = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cell"));
+	Cell->SetRelativeScale3D(FVector(1.9f, 1.9f, 1.0f));
 	
 	RootComponent = Cell;
 
@@ -20,15 +21,14 @@ ATileCell::ATileCell() : TileID(0)
 		Cell->SetStaticMesh(Idle);
 	}
 
-	Cell->SetRelativeScale3D(FVector(1.9f, 1.9f, 1.0f));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_SELECTED(TEXT("StaticMesh'/Game/StaticMesh/Plane_Selected.Plane_Selected'"));
+	if (SM_PLANE.Succeeded())
+		Selected = SM_SELECTED.Object;
+
 	
 	//OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
 	OnClicked.AddDynamic(this, &ATileCell::ClickTile);
 	//OnReleased.AddDynamic(this, &ATileCell::PrintName3);
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_SELECTED(TEXT("StaticMesh'/Game/StaticMesh/Plane_Selected.Plane_Selected'"));
-	if (SM_PLANE.Succeeded())
-		Selected = SM_SELECTED.Object;
 
 	//UE_LOG(LogTemp, Warning, TEXT("Complete Construct"));
 	//OnClicked.Broadcast(this, FKey(""));
