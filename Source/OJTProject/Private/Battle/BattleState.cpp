@@ -2,6 +2,7 @@
 
 
 #include "Battle/BattleState.h"
+#include "Battle/BattleAIController.h"
 #include "Map/MapGameInstance.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
@@ -116,15 +117,28 @@ void ABattleState::ClickTile(AActor* aActor)
 	int selected = Cast<ATileCell>(aActor)->GetTileID();
 	if(CurrentTile == -1) //선택된 타일이 없는 경우
 	{
+		if(selected != Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭해야 선택됨
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not on Character : %d"), selected);
+			return;
+		}
+
 		CurrentTile = selected;
 		Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
 	}
 	else
 	{
-		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
+		int TargetTile = CalcTileIndex(CurrentTile);
+		TileMap[TargetTile]->ChangeSMIdle();
 		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selected);
+
+		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(TileMap[TargetTile]->GetActorLocation()); //목적지 정하여 움직이도록 구현
+
 		CurrentTile = -1;
+		CurrentTurn++;
+		if(CurrentTurn >= 4)
+			CurrentTurn = 0;
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("TileSelect: %s"), *aActor->GetName());
 }

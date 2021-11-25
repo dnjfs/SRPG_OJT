@@ -2,6 +2,7 @@
 
 
 #include "Battle/BattleCharacter.h"
+#include "Battle/BattleAIController.h"
 
 // Sets default values
 ABattleCharacter::ABattleCharacter()
@@ -35,6 +36,9 @@ ABattleCharacter::ABattleCharacter()
 		UE_LOG(LogTemp, Warning, TEXT("ANIM Failed"));
 	}
 
+	AIControllerClass = ABattleAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	HP = 100;
 	Power = 40;
 }
@@ -49,6 +53,7 @@ void ABattleCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//SetActorLocation(GetActorLocation()+ FVector(10*DeltaTime, 0, 0)); //단순히 움직임, 캐릭터 무브먼트를 이용하는 방법은?
 }
 
 // Called to bind functionality to input

@@ -54,6 +54,7 @@ protected:
 	UPROPERTY(Transient)
 	int32 BattleColumn;
 
+	UPROPERTY(Transient)
 	int32 CurrentTile;
 
 private:
