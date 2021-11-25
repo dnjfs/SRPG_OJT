@@ -119,25 +119,32 @@ void ABattleState::ClickTile(AActor* aActor)
 	{
 		if(selected != Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭해야 선택됨
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Not on Character : %d"), selected);
+			UE_LOG(LogTemp, Warning, TEXT("Not on Character%d : %d"), CurrentTurn, selected);
 			return;
 		}
 
 		CurrentTile = selected;
-		Cast<ATileCell>(aActor)->ChangeSMSelected();
+		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMSelected(); //Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
 	}
 	else
 	{
-		int TargetTile = CalcTileIndex(CurrentTile);
-		TileMap[TargetTile]->ChangeSMIdle();
+		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
 		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selected);
 
+		if (selected == Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭해야 선택됨
+		{
+			CurrentTile = -1;
+			UE_LOG(LogTemp, Warning, TEXT("Not on Character : %d"), selected);
+			return;
+		}
+		int TargetTile = CalcTileIndex(selected);
 		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(TileMap[TargetTile]->GetActorLocation()); //목적지 정하여 움직이도록 구현
 
+		Player[CurrentTurn]->SetTileLocation(selected);
+
 		CurrentTile = -1;
-		CurrentTurn++;
-		if(CurrentTurn >= 4)
+		if(++CurrentTurn >= 4) //일단은 플레이어 캐릭터만 조종
 			CurrentTurn = 0;
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("TileSelect: %s"), *aActor->GetName());

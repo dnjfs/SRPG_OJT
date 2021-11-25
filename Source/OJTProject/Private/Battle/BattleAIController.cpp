@@ -3,7 +3,6 @@
 
 #include "Battle/BattleAIController.h"
 #include "AITypes.h"
-//#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 ABattleAIController::ABattleAIController()
 {
@@ -26,7 +25,8 @@ void ABattleAIController::OnUnPossess()
 
 void ABattleAIController::MoveCharacter(FVector TargetLocation)
 {
-	MoveToLocation(TargetLocation, 0, false);
-	UE_LOG(LogTemp, Warning, TEXT("%s Move To (%f, %f)"), *GetPawn()->GetName(), TargetLocation.X, TargetLocation.Y);
-	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, TargetLocation);
+	MoveToLocation(TargetLocation, 0, false); //¸ñÀûÁö, Çã¿ë¹üÀ§, ¿À¹ö·¦µÆÀ» ¶§ ¸ØÃß±â
+
+	FVector AILoc = GetPawn()->GetActorLocation();
+	UE_LOG(LogTemp, Warning, TEXT("%s Move To (%f %f) -> (%f, %f)"), *GetPawn()->GetName(), AILoc.X, AILoc.Y, TargetLocation.X, TargetLocation.Y);
 }
