@@ -98,7 +98,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
 		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Player.Add(BTChar);
-		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
+		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
 	for (int i = 0; i < n; i++) //적 생성
@@ -108,7 +108,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
 		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Enemy.Add(BTChar);
-		UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
+		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
 
@@ -139,18 +139,25 @@ void ABattleState::ClickTile(AActor* aActor)
 			return;
 		}
 		int TargetTile = CalcTileIndex(selected);
-		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(TileMap[TargetTile]->GetActorLocation()); //목적지 정하여 움직이도록 구현
+		TArray<FVector> ArrVec;
+		ArrVec.Add(TileMap[TargetTile+5]->GetActorLocation());
+		ArrVec.Add(TileMap[TargetTile]->GetActorLocation());
+		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
 
 		Player[CurrentTurn]->SetTileLocation(selected);
 
 		CurrentTile = -1;
-		if(++CurrentTurn >= 4) //일단은 플레이어 캐릭터만 조종
-			CurrentTurn = 0;
+		NextTurn();
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("TileSelect: %s"), *aActor->GetName());
 }
 
 int ABattleState::CalcTileIndex(int inTileID)
 {
 	return (inTileID/10)*BattleColumn + (inTileID%10);
+}
+
+void ABattleState::NextTurn()
+{
+	if (++CurrentTurn >= 4) //일단은 플레이어 캐릭터만 조종
+		CurrentTurn = 0;
 }

@@ -34,6 +34,8 @@ public:
 
 	int CalcTileIndex(int inTileID);
 
+	void NextTurn();
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	//UPROPERTY()

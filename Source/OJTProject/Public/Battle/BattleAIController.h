@@ -18,7 +18,21 @@ public:
 	ABattleAIController();
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
-	void MoveCharacter(FVector TargetLocation);
+	void MoveCharacter(TArray<FVector> TargetLocation);
+
+	bool GetNextDest();
+
+	static const FName DestinationKey;
 
 private:
+	UPROPERTY()
+	class UBehaviorTree* BTAsset;
+
+	UPROPERTY()
+	class UBlackboardData* BBAsset;
+
+	UPROPERTY()
+	TArray<FVector> DestArray;
+
+	int32 DestIndex = -1;
 };

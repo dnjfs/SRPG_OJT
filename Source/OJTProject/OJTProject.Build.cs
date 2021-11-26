@@ -8,7 +8,7 @@ public class OJTProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" }); //UMG 모듈 추가
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "AIModule", "GameplayTasks" }); //UMG, AI, GameplayTasks 모듈 추가
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
