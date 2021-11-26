@@ -36,6 +36,8 @@ public:
 
 	void NextTurn();
 
+	void FindRoute(int StartTile, int EndTile, TArray<FVector>& Route);
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	//UPROPERTY()

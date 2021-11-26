@@ -30,7 +30,7 @@ public:
 	int32 GetTileLocation();
 
 private:
-	int32 TileLoc;
+	int32 TileLoc; //≈∏¿œ ID
 	int32 HP;
 	int32 Power;
 };
