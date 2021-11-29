@@ -95,23 +95,24 @@ void ABattleState::SpawnCharacter()
 	int n = 4; //생성할 캐릭터 수
 	for(int i = 0; i < n; i++) //캐릭터 생성
 	{
-		int32 loc = BattleColumn * i;
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		int32 locIndex = BattleColumn * i;
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
-		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
+		BTChar->SetTileLocation(TileMap[locIndex]->GetTileID());
+		BTChar->SetPlayerCharacter(true);
 		Player.Add(BTChar);
-		CharacterTile[loc] = 1;
+		CharacterTile[locIndex] = 1;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
 	for (int i = 0; i < n; i++) //적 생성
 	{
-		int32 loc = (BattleColumn - 1) + (BattleColumn * i);
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[loc]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
+		int32 locIndex = (BattleColumn - 1) + (BattleColumn * i);
+		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
-		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
+		BTChar->SetTileLocation(TileMap[locIndex]->GetTileID());
 		Enemy.Add(BTChar);
-		CharacterTile[loc] = 2;
+		CharacterTile[locIndex] = 2;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
