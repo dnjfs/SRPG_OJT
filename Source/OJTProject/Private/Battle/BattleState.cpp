@@ -63,6 +63,8 @@ void ABattleState::SpawnTiles()
 		tID++;
 		tID *= 10;
 	}
+
+	CharacterTile.Init(0, BattleRow * BattleColumn);
 	/*
 	UWorld* world = GetWorld();
 	int tID = 0;
@@ -98,6 +100,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
 		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Player.Add(BTChar);
+		CharacterTile[loc] = 1;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
@@ -108,6 +111,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
 		BTChar->SetTileLocation(TileMap[loc]->GetTileID());
 		Enemy.Add(BTChar);
+		CharacterTile[loc] = 2;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
@@ -129,22 +133,32 @@ void ABattleState::ClickTile(AActor* aActor)
 	}
 	else
 	{
-		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
 		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selected);
 
-		if (selected == Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭해야 선택됨
+		if (selected == Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭한 경우
 		{
 			CurrentTile = -1;
-			UE_LOG(LogTemp, Warning, TEXT("Not on Character : %d"), selected);
+			UE_LOG(LogTemp, Warning, TEXT("Cancle Move : %d"), selected);
 			return;
 		}
-		int TargetTile = CalcTileIndex(selected);
+
+		int targetTileIndex = CalcTileIndex(selected);
+		if (CharacterTile[targetTileIndex] != 0) //다른 플레이어가 서있는 곳을 클릭한 경우
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selected);
+			return;
+		}
+
+		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
+
 		TArray<FVector> ArrVec;
 		FindRoute(Player[CurrentTurn]->GetTileLocation(), selected, ArrVec);
 		//ArrVec.Add(TileMap[TargetTile+5]->GetActorLocation());
 		//ArrVec.Add(TileMap[TargetTile]->GetActorLocation());
 		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
 
+		CharacterTile[targetTileIndex] = CharacterTile[CalcTileIndex(CurrentTile)];
+		CharacterTile[CalcTileIndex(CurrentTile)] = 0;
 		Player[CurrentTurn]->SetTileLocation(selected);
 
 		CurrentTile = -1;

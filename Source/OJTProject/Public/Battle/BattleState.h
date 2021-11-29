@@ -40,6 +40,8 @@ public:
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
+	UPROPERTY()
+	TArray<int32> CharacterTile; //R x C 배열, 0은 비어있고 1은 플레이어, 2는 적군
 	//UPROPERTY()
 	//TArray<FTileRow> TileMap2;
 
