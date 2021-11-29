@@ -4,7 +4,7 @@
 #include "Map/TileCell.h"
 
 // Sets default values
-ATileCell::ATileCell() : TileID(0)
+ATileCell::ATileCell()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -34,21 +34,20 @@ ATileCell::ATileCell() : TileID(0)
 	//OnClicked.Broadcast(this, FKey(""));
 }
 
-void ATileCell::PrintName(AActor* TileActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("TileOver %d"), TileID);
-}
 void ATileCell::ClickTile(AActor* TileActor, FKey TileKey)
 {
-	OnTileSelecedDelegate.Broadcast(TileActor);
-	//Cell->SetStaticMesh(Selected);
+	OnTileSelectedDelegate.Broadcast(TileActor);
 	//UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
 }
-void ATileCell::PrintName3(AActor* TileActor, FKey TileKey)
-{
-	Cell->SetStaticMesh(Idle);
-	UE_LOG(LogTemp, Warning, TEXT("TileRelease %d"), TileID);
-}
+//void ATileCell::PrintName(AActor* TileActor)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("TileOver %d"), TileID);
+//}
+//void ATileCell::PrintName3(AActor* TileActor, FKey TileKey)
+//{
+//	Cell->SetStaticMesh(Idle);
+//	UE_LOG(LogTemp, Warning, TEXT("TileRelease %d"), TileID);
+//}
 
 // Called when the game starts or when spawned
 void ATileCell::BeginPlay()

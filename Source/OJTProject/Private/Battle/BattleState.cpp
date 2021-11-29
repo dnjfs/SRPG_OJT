@@ -4,6 +4,7 @@
 #include "Battle/BattleState.h"
 #include "Battle/BattleAIController.h"
 #include "Map/MapGameInstance.h"
+#include "Map/TurnManager.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 #include "Engine/StaticMeshActor.h"
@@ -21,7 +22,9 @@ void ABattleState::BeginPlay()
 
 	SpawnTiles(); //타일 스폰
 	SpawnCharacter(); //캐릭터 스폰
-	//OnClicked.AddDynamic(this, &ABattleState::PrintName);
+
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.AddDynamic(this, &ABattleState::PlayTurn);
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.AddDynamic(this, &ABattleState::NextTurn);
 }
 
 void ABattleState::SpawnTiles()
@@ -55,7 +58,7 @@ void ABattleState::SpawnTiles()
 			tile->SetTileID(tID++); //ID 지정
 			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
 			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
-			tile->OnTileSelecedDelegate.AddDynamic(this, &ABattleState::ClickTile); //델리게이트 연결
+			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::ClickTile); //델리게이트 연결
 			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
 			TileMap.Add(tile); //액터 생성
 		}
@@ -78,7 +81,7 @@ void ABattleState::SpawnTiles()
 			tile->SetTileID(tID++); //ID 지정
 			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
 			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
-			tile->OnTileSelecedDelegate.AddDynamic(this, &ABattleState::PrintName); //델리게이트 연결
+			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::PrintName); //델리게이트 연결
 			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
 			tileRow.TileLine.Add(tile);
 		}
@@ -119,6 +122,8 @@ void ABattleState::SpawnCharacter()
 
 void ABattleState::ClickTile(AActor* aActor)
 {
+	if(bIsRunBehavior) return; //행동중인 경우 클릭 불가
+
 	int selected = Cast<ATileCell>(aActor)->GetTileID();
 	if(CurrentTile == -1) //선택된 타일이 없는 경우
 	{
@@ -129,7 +134,7 @@ void ABattleState::ClickTile(AActor* aActor)
 		}
 
 		CurrentTile = selected;
-		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMSelected(); //Cast<ATileCell>(aActor)->ChangeSMSelected();
+		TileMap[IDToIndex(CurrentTile)]->ChangeSMSelected(); //Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
 	}
 	else
@@ -143,39 +148,50 @@ void ABattleState::ClickTile(AActor* aActor)
 			return;
 		}
 
-		int targetTileIndex = CalcTileIndex(selected);
+		int targetTileIndex = IDToIndex(selected);
 		if (CharacterTile[targetTileIndex] != 0) //다른 플레이어가 서있는 곳을 클릭한 경우
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selected);
 			return;
 		}
 
-		TileMap[CalcTileIndex(CurrentTile)]->ChangeSMIdle();
+		TileMap[IDToIndex(CurrentTile)]->ChangeSMIdle();
 
 		TArray<FVector> ArrVec;
 		FindRoute(Player[CurrentTurn]->GetTileLocation(), selected, ArrVec);
 		//ArrVec.Add(TileMap[TargetTile+5]->GetActorLocation());
 		//ArrVec.Add(TileMap[TargetTile]->GetActorLocation());
 		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
+		//PlayTurn(); //이건 턴 매니저에서 실행
 
-		CharacterTile[targetTileIndex] = CharacterTile[CalcTileIndex(CurrentTile)];
-		CharacterTile[CalcTileIndex(CurrentTile)] = 0;
+		CharacterTile[targetTileIndex] = CharacterTile[IDToIndex(CurrentTile)];
+		CharacterTile[IDToIndex(CurrentTile)] = 0;
 		Player[CurrentTurn]->SetTileLocation(selected);
 
 		CurrentTile = -1;
-		NextTurn();
+		//NextTurn(); //이것도 턴 매니저에서 실행
 	}
 }
 
-int ABattleState::CalcTileIndex(int inTileID)
+int ABattleState::IDToIndex(int inTileID)
 {
 	return (inTileID/10)*BattleColumn + (inTileID%10);
+}
+
+void ABattleState::PlayTurn()
+{
+	bIsRunBehavior = true; //턴 종료 및 타일 클릭 비활성화
 }
 
 void ABattleState::NextTurn()
 {
 	if (++CurrentTurn >= 4) //일단은 플레이어 캐릭터만 조종
 		CurrentTurn = 0;
+
+	//턴 시작
+	
+	//플레이어 턴이 된 경우 입력 가능하도록
+	bIsRunBehavior = false;
 }
 
 //BFS로 길찾기
@@ -240,7 +256,7 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 
 	while (ReverseRoute.Num() != 0)
 	{
-		Route.Add(TileMap[CalcTileIndex(ReverseRoute.Last())]->GetActorLocation());
+		Route.Add(TileMap[IDToIndex(ReverseRoute.Last())]->GetActorLocation());
 		ReverseRoute.RemoveAt(ReverseRoute.Num()-1); //마지막 원소 제거
 	}
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
+#include "Map/TurnManager.h"
 #include "MapGameInstance.generated.h"
 
 USTRUCT(BlueprintType)
@@ -38,8 +39,13 @@ public:
 	virtual void Init() override;
 
 	FOJTLevelData* GetLevelData(int32 Level);
+
+	UTurnManager* GetTurnManagerInstance();
 		
 private:
 	UPROPERTY()
 	class UDataTable* LevelTable;
+
+	UPROPERTY()
+	class UTurnManager* TurnManager;
 };

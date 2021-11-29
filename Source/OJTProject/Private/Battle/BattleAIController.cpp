@@ -2,6 +2,7 @@
 
 
 #include "Battle/BattleAIController.h"
+#include "Map/MapGameInstance.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -46,6 +47,7 @@ void ABattleAIController::OnUnPossess()
 
 void ABattleAIController::MoveCharacter(TArray<FVector> TargetLocation)
 {
+	StartAIBehavior();
 	DestArray = TargetLocation;
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
@@ -82,5 +84,18 @@ bool ABattleAIController::GetNextDest()
 	BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
 	DestIndex = -1;
 	DestArray.Empty();
+
+	EndOfAIBehavior();
 	return false;
+}
+
+void ABattleAIController::StartAIBehavior()
+{
+	UE_LOG(LogTemp, Warning, TEXT("-------------------- Turn Delegate Start --------------------"));
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->PlayTurnDelegate();
+}
+void ABattleAIController::EndOfAIBehavior()
+{
+	UE_LOG(LogTemp, Warning, TEXT("-------------------- Turn Delegate End --------------------"));
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->NextTurnDelegate();
 }

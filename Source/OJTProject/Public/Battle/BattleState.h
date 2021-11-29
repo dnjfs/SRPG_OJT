@@ -32,8 +32,11 @@ public:
 	UFUNCTION()
 	void ClickTile(AActor* aActor);
 
-	int CalcTileIndex(int inTileID);
+	int IDToIndex(int inTileID);
 
+	UFUNCTION()
+	void PlayTurn();
+	UFUNCTION()
 	void NextTurn();
 
 	void FindRoute(int StartTile, int EndTile, TArray<FVector>& Route);
@@ -66,4 +69,6 @@ protected:
 private:
 	struct FOJTLevelData* CurrentLevelData;
 	int32 CurrentTurn = -1;
+
+	bool bIsRunBehavior = false;
 };

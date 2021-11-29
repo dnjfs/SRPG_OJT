@@ -22,6 +22,10 @@ public:
 
 	bool GetNextDest();
 
+	void StartAIBehavior();
+	void EndOfAIBehavior();
+
+public:
 	static const FName DestinationKey;
 
 private:

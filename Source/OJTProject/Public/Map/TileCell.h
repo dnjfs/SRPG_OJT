@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TileCell.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileSelecedDelegate, AActor*, TouchedActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileSelectedDelegate, AActor*, TouchedActor);
 
 UCLASS()
 class OJTPROJECT_API ATileCell : public AActor
@@ -29,16 +29,16 @@ public:
 	int GetTileID();
 
 	UFUNCTION()
-	void PrintName(AActor* TileActor);
-	UFUNCTION()
 	void ClickTile(AActor* TileActor, FKey TileKey);
-	UFUNCTION()
-	void PrintName3(AActor* TileActor, FKey TileKey);
+	//UFUNCTION()
+	//void PrintName(AActor* TileActor);
+	//UFUNCTION()
+	//void PrintName3(AActor* TileActor, FKey TileKey);
 
 	void ChangeSMIdle();
 	void ChangeSMSelected();
 
-	FOnTileSelecedDelegate OnTileSelecedDelegate;
+	FOnTileSelectedDelegate OnTileSelectedDelegate;
 
 private:
 	UPROPERTY(VisibleAnywhere)

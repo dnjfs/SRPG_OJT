@@ -11,6 +11,8 @@ UMapGameInstance::UMapGameInstance()
 	{
 		LevelTable = DT_LEVEL.Object;
 	}
+
+	TurnManager = NewObject<UTurnManager>();
 }
 
 void UMapGameInstance::Init()
@@ -21,4 +23,9 @@ void UMapGameInstance::Init()
 FOJTLevelData* UMapGameInstance::GetLevelData(int32 Level)
 {
 	return LevelTable->FindRow<FOJTLevelData>(*FString::FromInt(Level), TEXT(""));
+}
+
+UTurnManager* UMapGameInstance::GetTurnManagerInstance()
+{
+	return TurnManager;
 }
