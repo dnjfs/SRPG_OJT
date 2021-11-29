@@ -63,13 +63,13 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::SetupPlayerInputComponent"));
 }
 
-void ABattleCharacter::SetTileLocation(int onLoc)
+void ABattleCharacter::SetTileLocationID(int onLoc)
 {
-	TileLoc = onLoc;
+	TileLocID = onLoc;
 }
-int32 ABattleCharacter::GetTileLocation()
+int32 ABattleCharacter::GetTileLocationID()
 {
-	return TileLoc;
+	return TileLocID;
 }
 
 void ABattleCharacter::SetPlayerCharacter(bool inIsPlayer)

@@ -26,15 +26,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetTileLocation(int onLoc);
-	int32 GetTileLocation();
+	void SetTileLocationID(int onLocID);
+	int32 GetTileLocationID();
 
 	void SetPlayerCharacter(bool inIsPlayer);
 	bool GetIsPlayer();
 
 private:
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
-	int32 TileLoc = -1; //타일 ID
+	int32 TileLocID = -1; //타일 ID
 	int32 HP = 0;
 	int32 Power = 0;
 };

@@ -101,7 +101,7 @@ void ABattleState::SpawnCharacter()
 		int32 locIndex = BattleColumn * i;
 		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
-		BTChar->SetTileLocation(TileMap[locIndex]->GetTileID());
+		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
 		BTChar->SetPlayerCharacter(true);
 		Player.Add(BTChar);
 		CharacterTile[locIndex] = 1;
@@ -113,7 +113,7 @@ void ABattleState::SpawnCharacter()
 		int32 locIndex = (BattleColumn - 1) + (BattleColumn * i);
 		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
-		BTChar->SetTileLocation(TileMap[locIndex]->GetTileID());
+		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
 		Enemy.Add(BTChar);
 		CharacterTile[locIndex] = 2;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
@@ -124,49 +124,53 @@ void ABattleState::ClickTile(AActor* aActor)
 {
 	if(bIsRunBehavior) return; //행동중인 경우 클릭 불가
 
-	int selected = Cast<ATileCell>(aActor)->GetTileID();
+	int selectedID = Cast<ATileCell>(aActor)->GetTileID();
 	if(CurrentTile == -1) //선택된 타일이 없는 경우
 	{
-		if(selected != Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭해야 선택됨
+		if(selectedID != Player[CurrentTurn]->GetTileLocationID()) //플레이어가 서있는 곳을 클릭해야 선택됨
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Not on Character%d : %d"), CurrentTurn, selected);
+			UE_LOG(LogTemp, Warning, TEXT("Not on Character%d : %d"), CurrentTurn, selectedID);
 			return;
 		}
 
-		CurrentTile = selected;
+		CurrentTile = selectedID;
 		TileMap[IDToIndex(CurrentTile)]->ChangeSMSelected(); //Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selected);
+		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selectedID);
 
-		if (selected == Player[CurrentTurn]->GetTileLocation()) //플레이어가 서있는 곳을 클릭한 경우
+		if (selectedID == Player[CurrentTurn]->GetTileLocationID()) //플레이어가 서있는 곳을 클릭한 경우
 		{
 			CurrentTile = -1;
-			UE_LOG(LogTemp, Warning, TEXT("Cancle Move : %d"), selected);
+			UE_LOG(LogTemp, Warning, TEXT("Cancle Move : %d"), selectedID);
 			return;
 		}
 
-		int targetTileIndex = IDToIndex(selected);
-		if (CharacterTile[targetTileIndex] != 0) //다른 플레이어가 서있는 곳을 클릭한 경우
+		//int targetTileIndex = IDToIndex(selected);
+		if (CharacterTile[IDToIndex(selectedID)] != 0) //다른 플레이어가 서있는 곳을 클릭한 경우
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selected);
+			UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selectedID);
 			return;
 		}
+		//적군 클릭했을 땐 공격하도록 구현해야함
 
 		TileMap[IDToIndex(CurrentTile)]->ChangeSMIdle();
 
+		MoveTile(CurrentTile, selectedID, Player);
+		/*
 		TArray<FVector> ArrVec;
-		FindRoute(Player[CurrentTurn]->GetTileLocation(), selected, ArrVec);
+		FindRoute(Player[CurrentTurn]->GetTileLocationID(), selected, ArrVec);
 		//ArrVec.Add(TileMap[TargetTile+5]->GetActorLocation());
 		//ArrVec.Add(TileMap[TargetTile]->GetActorLocation());
 		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
 		//PlayTurn(); //이건 턴 매니저에서 실행
 
-		CharacterTile[targetTileIndex] = CharacterTile[IDToIndex(CurrentTile)];
+		CharacterTile[IDToIndex(selected)] = CharacterTile[IDToIndex(CurrentTile)];
 		CharacterTile[IDToIndex(CurrentTile)] = 0;
-		Player[CurrentTurn]->SetTileLocation(selected);
+		Player[CurrentTurn]->SetTileLocationID(selected);
+		*/
 
 		CurrentTile = -1;
 		//NextTurn(); //이것도 턴 매니저에서 실행
@@ -185,13 +189,38 @@ void ABattleState::PlayTurn()
 
 void ABattleState::NextTurn()
 {
-	if (++CurrentTurn >= 4) //일단은 플레이어 캐릭터만 조종
+	if (bIsPlayerTurn && ++CurrentTurn >= Player.Num()) //플레이어의 턴 모두 종료
+	{
+		bIsPlayerTurn = false;
 		CurrentTurn = 0;
+	}
+	else if(!bIsPlayerTurn && ++CurrentTurn >= Enemy.Num()) //적군의 턴 모두 종료
+	{
+		bIsPlayerTurn = true;
+		CurrentTurn = 0;
+	}
+		
+	if(bIsPlayerTurn) //플레이어 턴이 된 경우 입력 가능하도록
+	{
+		bIsRunBehavior = false;
+	}
+	else //적군 턴 시작
+	{
+		//적군 AI 실행
+		MoveTile(Enemy[CurrentTurn]->GetTileLocationID(), Enemy[CurrentTurn]->GetTileLocationID() - 1, Enemy);
+		/*
+		//int CurrentTile2 = Enemy[CurrentTurn]->GetTileLocationID();
+		//int selected = CurrentTile2 - 1; //단순히 왼쪽으로 한 칸 이동
+		//int targetTileIndex = IDToIndex(selected);
+		TArray<FVector> ArrVec;
+		FindRoute(Enemy[CurrentTurn]->GetTileLocationID(), selected, ArrVec);
 
-	//턴 시작
-	
-	//플레이어 턴이 된 경우 입력 가능하도록
-	bIsRunBehavior = false;
+		Cast<ABattleAIController>(Enemy[CurrentTurn]->GetController())->MoveCharacter(ArrVec);
+		CharacterTile[targetTileIndex] = CharacterTile[IDToIndex(CurrentTile2)];
+		CharacterTile[IDToIndex(CurrentTile2)] = 0;
+		Enemy[CurrentTurn]->SetTileLocationID(selected);
+		*/
+	}
 }
 
 //BFS로 길찾기
@@ -265,4 +294,16 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("(%f %f)"), vec.X, vec.Y);
 	}
+}
+
+void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharacter*>& BCharacter)
+{
+	TArray<FVector> ArrVec;
+	FindRoute(BCharacter[CurrentTurn]->GetTileLocationID(), EndTileID, ArrVec);
+
+	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
+
+	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //캐릭터 이동
+	CharacterTile[IDToIndex(StartTileID)] = 0; //원래 자리는 공백으로
+	BCharacter[CurrentTurn]->SetTileLocationID(EndTileID);
 }

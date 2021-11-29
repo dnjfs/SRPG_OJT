@@ -40,6 +40,8 @@ public:
 	void NextTurn();
 
 	void FindRoute(int StartTile, int EndTile, TArray<FVector>& Route);
+	
+	void MoveTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter);
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
@@ -64,11 +66,12 @@ protected:
 	int32 BattleColumn = -1;
 
 	UPROPERTY(Transient)
-	int32 CurrentTile = -1;
+	int32 CurrentTileID = -1;
 
 private:
 	struct FOJTLevelData* CurrentLevelData;
 	int32 CurrentTurn = -1;
 
 	bool bIsRunBehavior = false;
+	bool bIsPlayerTurn = true;
 };
