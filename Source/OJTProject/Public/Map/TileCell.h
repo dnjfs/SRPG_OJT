@@ -8,11 +8,18 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileSelectedDelegate, AActor*, TouchedActor);
 
+enum class ETileType
+{
+	Idle,
+	Current,
+	Selected,
+};
+
 UCLASS()
 class OJTPROJECT_API ATileCell : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	ATileCell();
@@ -35,8 +42,7 @@ public:
 	//UFUNCTION()
 	//void PrintName3(AActor* TileActor, FKey TileKey);
 
-	void ChangeSMIdle();
-	void ChangeSMSelected();
+	void ChangeTileSM(ETileType inType);
 
 	FOnTileSelectedDelegate OnTileSelectedDelegate;
 
@@ -45,9 +51,11 @@ private:
 	UStaticMeshComponent* Cell;
 
 	UPROPERTY()
-	UStaticMesh* Idle;
+	UStaticMesh* SMIdle;
 	UPROPERTY()
-	UStaticMesh* Selected;
+	UStaticMesh* SMCurrent;
+	UPROPERTY()
+	UStaticMesh* SMSelected;
 
 	UPROPERTY()
 	int32 TileID = -1; //За*10 + ї­

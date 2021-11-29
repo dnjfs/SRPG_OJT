@@ -65,11 +65,10 @@ protected:
 	UPROPERTY(Transient)
 	int32 BattleColumn = -1;
 
-	UPROPERTY(Transient)
-	int32 CurrentTileID = -1;
-
 private:
 	struct FOJTLevelData* CurrentLevelData;
+
+	int32 CurrentTileID = -1;
 	int32 CurrentTurn = -1;
 
 	bool bIsRunBehavior = false;

@@ -17,13 +17,17 @@ ATileCell::ATileCell()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_PLANE(TEXT("StaticMesh'/Game/StaticMesh/Shape_Plane.Shape_Plane'"));
 	if (SM_PLANE.Succeeded())
 	{
-		Idle = SM_PLANE.Object;
-		Cell->SetStaticMesh(Idle);
+		SMIdle = SM_PLANE.Object;
+		ChangeTileSM(ETileType::Idle);
 	}
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_CURRENT(TEXT("StaticMesh'/Game/StaticMesh/Plane_Current.Plane_Current'"));
+	if (SM_CURRENT.Succeeded())
+		SMCurrent = SM_CURRENT.Object;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_SELECTED(TEXT("StaticMesh'/Game/StaticMesh/Plane_Selected.Plane_Selected'"));
-	if (SM_PLANE.Succeeded())
-		Selected = SM_SELECTED.Object;
+	if (SM_SELECTED.Succeeded())
+		SMSelected = SM_SELECTED.Object;
 
 	
 	//OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
@@ -72,11 +76,12 @@ int ATileCell::GetTileID()
 	return TileID;
 }
 
-void ATileCell::ChangeSMIdle()
+void ATileCell::ChangeTileSM(ETileType inType)
 {
-	Cell->SetStaticMesh(Idle);
-}
-void ATileCell::ChangeSMSelected()
-{
-	Cell->SetStaticMesh(Selected);
+	if(inType == ETileType::Idle)
+		Cell->SetStaticMesh(SMIdle);
+	else if(inType == ETileType::Current)
+		Cell->SetStaticMesh(SMCurrent);
+	else if (inType == ETileType::Selected)
+		Cell->SetStaticMesh(SMSelected);
 }

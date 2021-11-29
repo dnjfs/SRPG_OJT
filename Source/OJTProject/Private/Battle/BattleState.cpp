@@ -17,14 +17,13 @@ void ABattleState::BeginPlay()
 	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld()); //현재 레벨 이름 불러오기
 	BattleLevel = FCString::Atoi(*(LevelName.Right(1))); //레벨 이름의 가장 오른쪽 번호 가져오기
 
-	CurrentTile = -1; //선택된 타일이 없음
-	CurrentTurn = 0; //0번째부터 시작
-
 	SpawnTiles(); //타일 스폰
 	SpawnCharacter(); //캐릭터 스폰
 
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.AddDynamic(this, &ABattleState::PlayTurn);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.AddDynamic(this, &ABattleState::NextTurn);
+
+	NextTurn(); //첫 턴 시작
 }
 
 void ABattleState::SpawnTiles()
@@ -125,7 +124,7 @@ void ABattleState::ClickTile(AActor* aActor)
 	if(bIsRunBehavior) return; //행동중인 경우 클릭 불가
 
 	int selectedID = Cast<ATileCell>(aActor)->GetTileID();
-	if(CurrentTile == -1) //선택된 타일이 없는 경우
+	if(CurrentTileID == -1) //선택된 타일이 없는 경우
 	{
 		if(selectedID != Player[CurrentTurn]->GetTileLocationID()) //플레이어가 서있는 곳을 클릭해야 선택됨
 		{
@@ -133,17 +132,18 @@ void ABattleState::ClickTile(AActor* aActor)
 			return;
 		}
 
-		CurrentTile = selectedID;
-		TileMap[IDToIndex(CurrentTile)]->ChangeSMSelected(); //Cast<ATileCell>(aActor)->ChangeSMSelected();
-		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTile);
+		CurrentTileID = selectedID;
+		TileMap[IDToIndex(CurrentTileID)]->ChangeTileSM(ETileType::Selected); //Cast<ATileCell>(aActor)->ChangeSMSelected();
+		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTileID);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTile, selectedID);
+		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTileID, selectedID);
 
 		if (selectedID == Player[CurrentTurn]->GetTileLocationID()) //플레이어가 서있는 곳을 클릭한 경우
 		{
-			CurrentTile = -1;
+			TileMap[IDToIndex(CurrentTileID)]->ChangeTileSM(ETileType::Current);
+			CurrentTileID = -1;
 			UE_LOG(LogTemp, Warning, TEXT("Cancle Move : %d"), selectedID);
 			return;
 		}
@@ -156,9 +156,8 @@ void ABattleState::ClickTile(AActor* aActor)
 		}
 		//적군 클릭했을 땐 공격하도록 구현해야함
 
-		TileMap[IDToIndex(CurrentTile)]->ChangeSMIdle();
 
-		MoveTile(CurrentTile, selectedID, Player);
+		MoveTile(CurrentTileID, selectedID, Player);
 		/*
 		TArray<FVector> ArrVec;
 		FindRoute(Player[CurrentTurn]->GetTileLocationID(), selected, ArrVec);
@@ -172,7 +171,7 @@ void ABattleState::ClickTile(AActor* aActor)
 		Player[CurrentTurn]->SetTileLocationID(selected);
 		*/
 
-		CurrentTile = -1;
+		CurrentTileID = -1;
 		//NextTurn(); //이것도 턴 매니저에서 실행
 	}
 }
@@ -198,6 +197,15 @@ void ABattleState::NextTurn()
 	{
 		bIsPlayerTurn = true;
 		CurrentTurn = 0;
+	}
+	
+	if(bIsPlayerTurn)
+	{
+		TileMap[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
+	}
+	else
+	{
+		TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
 	}
 		
 	if(bIsPlayerTurn) //플레이어 턴이 된 경우 입력 가능하도록
@@ -306,4 +314,6 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //캐릭터 이동
 	CharacterTile[IDToIndex(StartTileID)] = 0; //원래 자리는 공백으로
 	BCharacter[CurrentTurn]->SetTileLocationID(EndTileID);
+
+	TileMap[IDToIndex(StartTileID)]->ChangeTileSM(ETileType::Idle);
 }
