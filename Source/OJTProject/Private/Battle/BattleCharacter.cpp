@@ -67,8 +67,16 @@ void ABattleCharacter::SetTileLocation(int onLoc)
 {
 	TileLoc = onLoc;
 }
-
 int32 ABattleCharacter::GetTileLocation()
 {
 	return TileLoc;
+}
+
+void ABattleCharacter::SetPlayerCharacter(bool inIsPlayer)
+{
+	bIsPlayer = inIsPlayer;
+}
+bool ABattleCharacter::GetIsPlayer()
+{
+	return bIsPlayer;
 }

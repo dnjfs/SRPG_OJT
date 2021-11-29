@@ -50,5 +50,5 @@ private:
 	UStaticMesh* Selected;
 
 	UPROPERTY()
-	int32 TileID; //행*10 + 열
+	int32 TileID = -1; //행*10 + 열
 };

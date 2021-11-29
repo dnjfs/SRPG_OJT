@@ -29,8 +29,12 @@ public:
 	void SetTileLocation(int onLoc);
 	int32 GetTileLocation();
 
+	void SetPlayerCharacter(bool inIsPlayer);
+	bool GetIsPlayer();
+
 private:
-	int32 TileLoc; //타일 ID
-	int32 HP;
-	int32 Power;
+	bool bIsPlayer = false; //플레이어 캐릭터 여부
+	int32 TileLoc = -1; //타일 ID
+	int32 HP = 0;
+	int32 Power = 0;
 };

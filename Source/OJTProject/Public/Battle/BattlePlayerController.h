@@ -22,9 +22,9 @@ protected:
 public:
 	ABattlePlayerController();
 	virtual void OnPossess(APawn* aPawn) override;
-	void OnClickTile();
-	void OnDragTile();
-	void OnEndTile();
+	//void OnClickTile();
+	//void OnDragTile();
+	//void OnEndTile();
 
 private:
 	FInputModeGameAndUI GameAndUIInputMode;

@@ -50,18 +50,18 @@ public:
 
 protected:
 	UPROPERTY(Transient)
-	int32 BattleLevel;
+	int32 BattleLevel = -1;
 	
 	UPROPERTY(Transient)
-	int32 BattleRow;
+	int32 BattleRow = -1;
 	
 	UPROPERTY(Transient)
-	int32 BattleColumn;
+	int32 BattleColumn = -1;
 
 	UPROPERTY(Transient)
-	int32 CurrentTile;
+	int32 CurrentTile = -1;
 
 private:
 	struct FOJTLevelData* CurrentLevelData;
-	int32 CurrentTurn;
+	int32 CurrentTurn = -1;
 };

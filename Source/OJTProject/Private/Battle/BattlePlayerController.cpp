@@ -39,25 +39,25 @@ void ABattlePlayerController::SetupInputComponent()
 	//InputComponent->BindAction(TEXT("EndTile"), EInputEvent::IE_Released, this, &ABattlePlayerController::OnEndTile);
 }
 
-void ABattlePlayerController::OnClickTile()
-{
-	//UKismetSystemLibrary::LineTraceSingleForObjects();
-	FHitResult HitResult;
-	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
-	UE_LOG(LogTemp, Warning, TEXT("Click %f %f"), HitResult.Location.X, HitResult.Location.Y);
-}
-void ABattlePlayerController::OnDragTile()
-{
-	FHitResult HitResult;
-	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
-	UE_LOG(LogTemp, Warning, TEXT("Drag %f %f"), HitResult.Location.X, HitResult.Location.Y);
-}
-void ABattlePlayerController::OnEndTile()
-{
-	FHitResult HitResult;
-	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
-	UE_LOG(LogTemp, Warning, TEXT("End %f %f"), HitResult.Location.X, HitResult.Location.Y);
-}
+//void ABattlePlayerController::OnClickTile()
+//{
+//	//UKismetSystemLibrary::LineTraceSingleForObjects();
+//	FHitResult HitResult;
+//	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+//	UE_LOG(LogTemp, Warning, TEXT("Click %f %f"), HitResult.Location.X, HitResult.Location.Y);
+//}
+//void ABattlePlayerController::OnDragTile()
+//{
+//	FHitResult HitResult;
+//	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+//	UE_LOG(LogTemp, Warning, TEXT("Drag %f %f"), HitResult.Location.X, HitResult.Location.Y);
+//}
+//void ABattlePlayerController::OnEndTile()
+//{
+//	FHitResult HitResult;
+//	this->GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+//	UE_LOG(LogTemp, Warning, TEXT("End %f %f"), HitResult.Location.X, HitResult.Location.Y);
+//}
 
 void ABattlePlayerController::OnPossess(APawn* aPawn)
 {

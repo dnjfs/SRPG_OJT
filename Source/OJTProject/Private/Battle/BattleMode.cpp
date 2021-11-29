@@ -12,7 +12,6 @@ ABattleMode::ABattleMode()
 {
 	DefaultPawnClass = NULL;
 	//DefaultPawnClass = ABattlePawn::StaticClass();
-	//DefaultPawnClass = ABattleCharacter::StaticClass();
 	PlayerControllerClass = ABattlePlayerController::StaticClass();
 	GameStateClass = ABattleState::StaticClass();
 	PlayerStateClass = ABattlePlayerState::StaticClass();
