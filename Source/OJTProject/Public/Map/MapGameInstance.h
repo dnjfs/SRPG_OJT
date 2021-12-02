@@ -26,6 +26,37 @@ public:
 	int32 row;
 };
 
+
+UENUM()
+enum class CharacterType
+{
+	NONE,
+	PLAYER1,
+	PLAYER2,
+	ENEMY,
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FCharacterTable() : CharType(CharacterType::NONE), SKChar(nullptr), AMChar(nullptr) {};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		CharacterType CharType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		USkeletalMesh* SKChar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		TSubclassOf<UAnimInstance> AIChar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		UAnimMontage* AMChar;
+};
+
 /**
  * 
  */
@@ -39,12 +70,16 @@ public:
 	virtual void Init() override;
 
 	FOJTLevelData* GetLevelData(int32 Level);
+	FCharacterTable* GetCharcaterData(CharacterType CType);
 
 	UTurnManager* GetTurnManagerInstance();
 		
 private:
 	UPROPERTY()
 	class UDataTable* LevelTable;
+
+	UPROPERTY()
+	class UDataTable* CharacterTable;
 
 	UPROPERTY()
 	class UTurnManager* TurnManager;

@@ -3,6 +3,7 @@
 
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
+#include "Map/MapGameInstance.h"
 
 // Sets default values
 ABattleCharacter::ABattleCharacter()
@@ -10,9 +11,32 @@ ABattleCharacter::ABattleCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	AIControllerClass = ABattleAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	HP = 100;
+	Power = 40;
+
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	auto GameInst = Cast<UMapGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInst == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GetGameInstance() return NULLPTR"));
+		return;
+	}
+
+	FCharacterTable* CharacterRow = GameInst->GetCharcaterData(CharacterType::PLAYER2);
+	if (CharacterRow != nullptr)
+	{
+		GetMesh()->SetSkeletalMesh(CharacterRow->SKChar);
+		GetMesh()->SetAnimInstanceClass(CharacterRow->AIChar);
+	}
 	//SkeletalMesh 가져오기
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_MANNEQUIN(TEXT("SkeletalMesh'/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin'"));
+	/*
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_MANNEQUIN(TEXT("SkeletalMesh'/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_MANNEQUIN(TEXT("SkeletalMesh'/Game/Character/SK_CharM_Ram.SK_CharM_Ram'"));
 	if (SK_MANNEQUIN.Succeeded())
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("SK Success"));
@@ -22,10 +46,12 @@ ABattleCharacter::ABattleCharacter()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SK Failed"));
 	}
+	*/
 
 	//AnimInstance 가져오기
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	static ConstructorHelpers::FClassFinder<UAnimInstance> MANNEQUIN_ANIM(TEXT("AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C'")); //블루프린트 가져올 땐 _C 붙이기
+	/*
+	//static ConstructorHelpers::FClassFinder<UAnimInstance> MANNEQUIN_ANIM(TEXT("AnimBlueprint'/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C'")); //블루프린트 가져올 땐 _C 붙이기
+	static ConstructorHelpers::FClassFinder<UAnimInstance> MANNEQUIN_ANIM(TEXT("AnimBlueprint'/Game/Animations/BP_PlayerAnim.BP_PlayerAnim_C'"));
 	if (MANNEQUIN_ANIM.Succeeded())
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("ANIM Success"));
@@ -35,18 +61,12 @@ ABattleCharacter::ABattleCharacter()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ANIM Failed"));
 	}
-
-	AIControllerClass = ABattleAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	HP = 100;
-	Power = 40;
+	*/
 }
 
 void ABattleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ABattleCharacter::Tick(float DeltaTime)
