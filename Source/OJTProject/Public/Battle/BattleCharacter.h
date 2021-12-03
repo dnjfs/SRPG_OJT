@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Map/MapGameInstance.h"
 #include "BattleCharacter.generated.h"
 
 UCLASS()
@@ -33,6 +34,7 @@ public:
 	bool GetIsPlayer();
 
 private:
+	ECharacterType CharacterType = ECharacterType::NONE;
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
 	int32 TileLocID = -1; //타일 ID
 	int32 HP = 0;

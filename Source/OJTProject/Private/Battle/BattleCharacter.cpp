@@ -3,7 +3,6 @@
 
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
-#include "Map/MapGameInstance.h"
 
 // Sets default values
 ABattleCharacter::ABattleCharacter()
@@ -14,6 +13,7 @@ ABattleCharacter::ABattleCharacter()
 	AIControllerClass = ABattleAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	CharacterType = ECharacterType::PLAYER1;
 	HP = 100;
 	Power = 40;
 
@@ -27,7 +27,7 @@ ABattleCharacter::ABattleCharacter()
 		return;
 	}
 
-	FCharacterTable* CharacterRow = GameInst->GetCharcaterData(CharacterType::PLAYER2);
+	FCharacterTable* CharacterRow = GameInst->GetCharcaterData(CharacterType);
 	if (CharacterRow != nullptr)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterRow->SKChar);

@@ -28,7 +28,7 @@ public:
 
 
 UENUM()
-enum class CharacterType
+enum class ECharacterType
 {
 	NONE,
 	PLAYER1,
@@ -42,10 +42,10 @@ struct FCharacterTable : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FCharacterTable() : CharType(CharacterType::NONE), SKChar(nullptr), AMChar(nullptr) {};
+	FCharacterTable() : CharType(ECharacterType::NONE), SKChar(nullptr), AMChar(nullptr) {};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		CharacterType CharType;
+		ECharacterType CharType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		USkeletalMesh* SKChar;
@@ -70,7 +70,7 @@ public:
 	virtual void Init() override;
 
 	FOJTLevelData* GetLevelData(int32 Level);
-	FCharacterTable* GetCharcaterData(CharacterType CType);
+	FCharacterTable* GetCharcaterData(ECharacterType CType);
 
 	UTurnManager* GetTurnManagerInstance();
 		

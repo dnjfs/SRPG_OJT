@@ -32,7 +32,7 @@ FOJTLevelData* UMapGameInstance::GetLevelData(int32 Level)
 	return LevelTable->FindRow<FOJTLevelData>(*FString::FromInt(Level), TEXT(""));
 }
 
-FCharacterTable* UMapGameInstance::GetCharcaterData(CharacterType CType)
+FCharacterTable* UMapGameInstance::GetCharcaterData(ECharacterType CType)
 {
 	TArray<FCharacterTable*> datas;
 	CharacterTable->GetAllRows<FCharacterTable>(TEXT(""), datas);
