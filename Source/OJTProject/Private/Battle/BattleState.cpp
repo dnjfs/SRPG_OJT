@@ -52,13 +52,11 @@ void ABattleState::SpawnTiles()
 	{
 		for (int x = 0; x < BattleColumn; ++x)
 		{
-			//world->SpawnActor<ATileCell>(floorLoc, FRotator::ZeroRotator);
 			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
 			tile->SetTileID(tID++); //ID 지정
 			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
 			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
 			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::ClickTile); //델리게이트 연결
-			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
 			TileMap.Add(tile); //액터 생성
 		}
 		tID /= 10;
@@ -67,29 +65,6 @@ void ABattleState::SpawnTiles()
 	}
 
 	CharacterTile.Init(0, BattleRow * BattleColumn);
-	/*
-	UWorld* world = GetWorld();
-	int tID = 0;
-	for (int y = 0; y < BattleRow; ++y)
-	{
-		TileRow tileRow;
-		for (int x = 0; x < BattleColumn; ++x)
-		{
-			//world->SpawnActor<ATileCell>(floorLoc, FRotator::ZeroRotator);
-			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
-			tile->SetTileID(tID++); //ID 지정
-			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //부모 설정
-			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //타일 이름 변경
-			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::PrintName); //델리게이트 연결
-			//tile->OnClicked.AddDynamic(this, &ABattleState::PrintName);
-			tileRow.TileLine.Add(tile);
-		}
-		TileMap2.Add(tileRow); //액터 생성
-		tID /= 10;
-		tID++;
-		tID *= 10;
-	}
-	*/
 }
 
 void ABattleState::SpawnCharacter()
@@ -158,21 +133,8 @@ void ABattleState::ClickTile(AActor* aActor)
 
 
 		MoveTile(CurrentTileID, selectedID, Player);
-		/*
-		TArray<FVector> ArrVec;
-		FindRoute(Player[CurrentTurn]->GetTileLocationID(), selected, ArrVec);
-		//ArrVec.Add(TileMap[TargetTile+5]->GetActorLocation());
-		//ArrVec.Add(TileMap[TargetTile]->GetActorLocation());
-		Cast<ABattleAIController>(Player[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
-		//PlayTurn(); //이건 턴 매니저에서 실행
-
-		CharacterTile[IDToIndex(selected)] = CharacterTile[IDToIndex(CurrentTile)];
-		CharacterTile[IDToIndex(CurrentTile)] = 0;
-		Player[CurrentTurn]->SetTileLocationID(selected);
-		*/
 
 		CurrentTileID = -1;
-		//NextTurn(); //이것도 턴 매니저에서 실행
 	}
 }
 
@@ -216,18 +178,6 @@ void ABattleState::NextTurn()
 	{
 		//적군 AI 실행
 		MoveTile(Enemy[CurrentTurn]->GetTileLocationID(), Enemy[CurrentTurn]->GetTileLocationID() - 1, Enemy);
-		/*
-		//int CurrentTile2 = Enemy[CurrentTurn]->GetTileLocationID();
-		//int selected = CurrentTile2 - 1; //단순히 왼쪽으로 한 칸 이동
-		//int targetTileIndex = IDToIndex(selected);
-		TArray<FVector> ArrVec;
-		FindRoute(Enemy[CurrentTurn]->GetTileLocationID(), selected, ArrVec);
-
-		Cast<ABattleAIController>(Enemy[CurrentTurn]->GetController())->MoveCharacter(ArrVec);
-		CharacterTile[targetTileIndex] = CharacterTile[IDToIndex(CurrentTile2)];
-		CharacterTile[IDToIndex(CurrentTile2)] = 0;
-		Enemy[CurrentTurn]->SetTileLocationID(selected);
-		*/
 	}
 }
 

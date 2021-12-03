@@ -30,36 +30,19 @@ ATileCell::ATileCell()
 		SMSelected = SM_SELECTED.Object;
 
 	
-	//OnBeginCursorOver.AddDynamic(this, &ATileCell::PrintName);
 	OnClicked.AddDynamic(this, &ATileCell::ClickTile);
-	//OnReleased.AddDynamic(this, &ATileCell::PrintName3);
-
-	//UE_LOG(LogTemp, Warning, TEXT("Complete Construct"));
-	//OnClicked.Broadcast(this, FKey(""));
 }
 
 void ATileCell::ClickTile(AActor* TileActor, FKey TileKey)
 {
 	OnTileSelectedDelegate.Broadcast(TileActor);
-	//UE_LOG(LogTemp, Warning, TEXT("TileClick %d"), TileID);
 }
-//void ATileCell::PrintName(AActor* TileActor)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("TileOver %d"), TileID);
-//}
-//void ATileCell::PrintName3(AActor* TileActor, FKey TileKey)
-//{
-//	Cell->SetStaticMesh(Idle);
-//	UE_LOG(LogTemp, Warning, TEXT("TileRelease %d"), TileID);
-//}
 
-// Called when the game starts or when spawned
 void ATileCell::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void ATileCell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

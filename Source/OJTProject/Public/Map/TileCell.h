@@ -37,10 +37,6 @@ public:
 
 	UFUNCTION()
 	void ClickTile(AActor* TileActor, FKey TileKey);
-	//UFUNCTION()
-	//void PrintName(AActor* TileActor);
-	//UFUNCTION()
-	//void PrintName3(AActor* TileActor, FKey TileKey);
 
 	void ChangeTileSM(ETileType inType);
 

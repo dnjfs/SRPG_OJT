@@ -58,17 +58,6 @@ void ABattleAIController::MoveCharacter(TArray<FVector> TargetLocation)
 		}
 	}
 
-	//반복문 써서 벡터 리스트대로 움직이기
-	//MoveToLocation이 완료 됐을 때 타이밍을 알아야함
-	//for(FVector target : TargetLocation)
-	//{
-	//	if(EPathFollowingRequestResult::RequestSuccessful == MoveToLocation(target, 0, false)) //Task 또는 Behavior Tree로 구현
-	//	{
-	//		FVector AILoc = GetPawn()->GetActorLocation();
-	//		UE_LOG(LogTemp, Warning, TEXT("%s Move To (%f %f) -> (%f, %f)"), *GetPawn()->GetName(), AILoc.X, AILoc.Y, target.X, target.Y);
-	//	}
-	//}
-
 }
 
 bool ABattleAIController::GetNextDest()
@@ -79,7 +68,9 @@ bool ABattleAIController::GetNextDest()
 		return true;
 	}
 
-	//비헤이비어 트리 종료
+	//이동 완료 상태
+	//공격을 할 필요가 없다면 비헤이비어 트리 종료
+	//AI 플레이어에 타겟 액터를 위크포인트로 잡고있기? nullptr이 아니면 타겟이 있는 것이므로 공격..?
 	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
 	BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
 	DestIndex = -1;
