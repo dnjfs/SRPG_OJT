@@ -15,11 +15,16 @@ ABattleCharacter::ABattleCharacter()
 	CharacterType = ECharacterType::PLAYER1;
 	HP = 100;
 	Power = 40;
+}
+
+void ABattleCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
-	auto GameInst = Cast<UMapGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	auto GameInst = Cast<UMapGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); //생성자에서 GetWorld() 호출 시 CDO를 만들 때 월드가 없어 nullptr이 반환됨
 	if (GameInst == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GetGameInstance() return NULLPTR"));
