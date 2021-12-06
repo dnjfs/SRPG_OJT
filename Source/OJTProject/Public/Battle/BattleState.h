@@ -26,6 +26,10 @@ public:
 	UFUNCTION()
 	void ClickTile(AActor* aActor);
 
+	void ClearTileSM(); //타일 스태틱메시 초기화
+	void AvailableTileSM(int PlayerID); //선택한 캐릭터가 이동 가능한 타일 표시
+	void AttackTileSM(int TargetID); //타겟에서 공격 가능한 타일 표시
+
 	int IDToIndex(int inTileID);
 
 	UFUNCTION()
@@ -36,11 +40,12 @@ public:
 	void FindRoute(int StartTile, int EndTile, TArray<FVector>& Route);
 	
 	void MoveTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter);
+	void AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter);
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()
-	TArray<int32> CharacterTile; //R x C 배열, 0은 비어있고 1은 플레이어, 2는 적군
+	TArray<ABattleCharacter*> CharacterTile; //R x C 배열, 캐릭터가 없으면 nullptr
 
 	UPROPERTY()
 	TArray<ABattleCharacter*> Player;
@@ -61,6 +66,7 @@ private:
 	struct FOJTLevelData* CurrentLevelData;
 
 	int32 CurrentTileID = -1;
+	int32 AttackTileID = -1;
 	int32 CurrentTurn = -1;
 
 	bool bIsRunBehavior = false;

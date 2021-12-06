@@ -2,6 +2,7 @@
 
 
 #include "Battle/BattleAIController.h"
+#include "Battle/PlayerAnimInstance.h"
 #include "Map/MapGameInstance.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
@@ -31,7 +32,6 @@ ABattleAIController::ABattleAIController()
 	}
 }
 
-
 void ABattleAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -45,19 +45,24 @@ void ABattleAIController::OnUnPossess()
 	Super::OnUnPossess();
 }
 
+void ABattleAIController::SetEndAttackDelegate()
+{
+	Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->OnEndAttack.AddLambda([this]() {
+		BehaviorType = EBehaviorType::NONE; //TargetCharacter = nullptr;
+		EndOfAIBehavior();
+	});
+}
+
 void ABattleAIController::MoveCharacter(TArray<FVector> TargetLocation)
 {
-	StartAIBehavior();
 	DestArray = TargetLocation;
-	if (UseBlackboard(BBAsset, Blackboard))
-	{
-		//Blackboard->SetValueAsVector(DestinationKey, DestArray[DestIndex]);
-		if (!RunBehaviorTree(BTAsset))
-		{
-			UE_LOG(LogTemp, Error, TEXT("AIController couldn't run behavior tree!"));
-		}
-	}
+	StartAIBehavior();
+}
 
+void ABattleAIController::AttackCharacter()
+{
+	BehaviorType = EBehaviorType::ATTACK;
+	//this->TargetCharacter = inTargetCharacter; //캐릭터에서 직접 가지고 있음
 }
 
 bool ABattleAIController::GetNextDest()
@@ -67,23 +72,45 @@ bool ABattleAIController::GetNextDest()
 		Blackboard->SetValueAsVector(DestinationKey, DestArray[DestIndex]);
 		return true;
 	}
-
-	//이동 완료 상태
-	//공격을 할 필요가 없다면 비헤이비어 트리 종료
-	//AI 플레이어에 타겟 액터를 위크포인트로 잡고있기? nullptr이 아니면 타겟이 있는 것이므로 공격..?
-	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
-	BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
 	DestIndex = -1;
 	DestArray.Empty();
 
-	EndOfAIBehavior();
+	auto BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
+	BehaviorTreeComponent->StopTree(EBTStopMode::Safe);
 	return false;
+}
+
+void ABattleAIController::AttackAnimation()
+{
+	//이동 완료 상태
+	
+	if (BehaviorType == EBehaviorType::ATTACK) //공격하는 행동일 경우
+	{
+		//Attack 애니메이션
+		Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->PlayAttackMontage(); //애니메이션 중 AnimNotify로 델리게이트를 이용하여 TakeDamage() 호출
+	}
+	//else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
+	//{
+		//Skill 애니메이션
+	//}
+	else //공격을 할 필요가 없다면 비헤이비어 트리 종료
+	{
+		EndOfAIBehavior();
+	}
 }
 
 void ABattleAIController::StartAIBehavior()
 {
 	UE_LOG(LogTemp, Warning, TEXT("-------------------- Turn Delegate Start --------------------"));
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->PlayTurnDelegate();
+
+	if (UseBlackboard(BBAsset, Blackboard))
+	{
+		if (!RunBehaviorTree(BTAsset))
+		{
+			UE_LOG(LogTemp, Error, TEXT("AIController couldn't run behavior tree!"));
+		}
+	}
 }
 void ABattleAIController::EndOfAIBehavior()
 {

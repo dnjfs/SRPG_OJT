@@ -27,6 +27,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	void AttackCharacter();
 
 	void SetTileLocationID(int onLocID);
 	int32 GetTileLocationID();
@@ -34,10 +37,17 @@ public:
 	void SetPlayerCharacter(bool inIsPlayer);
 	bool GetIsPlayer();
 
+	void SetTargetCharacter(ABattleCharacter* inTarget);
+	void ChangeHP(float Damage);
+
 private:
 	ECharacterType CharacterType = ECharacterType::NONE;
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
 	int32 TileLocID = -1; //타일 ID
+
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess = true))
 	int32 HP = 0;
 	int32 Power = 0;
+
+	ABattleCharacter* TargetCharacter;
 };

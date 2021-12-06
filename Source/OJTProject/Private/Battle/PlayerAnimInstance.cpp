@@ -6,6 +6,7 @@
 UPlayerAnimInstance::UPlayerAnimInstance()
 {
 	CurrentPawnSpeed = 0.0f;
+	bIsDead = false;
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -17,4 +18,24 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		CurrentPawnSpeed = Pawn->GetVelocity().Size();
 	}
+}
+
+void UPlayerAnimInstance::SetAttackMontage(UAnimMontage* inAttackMontage)
+{
+	AttackMontage = inAttackMontage;
+}
+
+void UPlayerAnimInstance::AnimNotify_AttackHit()
+{
+	OnAttackHit.Broadcast();
+}
+
+void UPlayerAnimInstance::AnimNotify_MontageEnded()
+{
+	OnEndAttack.Broadcast();
+}
+
+void UPlayerAnimInstance::PlayAttackMontage()
+{
+	Montage_Play(AttackMontage, 1.0f);
 }

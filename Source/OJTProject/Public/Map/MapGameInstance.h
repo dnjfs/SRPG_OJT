@@ -45,16 +45,16 @@ public:
 	FCharacterTable() : CharType(ECharacterType::NONE), SKChar(nullptr), AMChar(nullptr) {};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		ECharacterType CharType;
+	ECharacterType CharType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		USkeletalMesh* SKChar;
+	USkeletalMesh* SKChar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		TSubclassOf<UAnimInstance> AIChar;
+	TSubclassOf<UAnimInstance> AIChar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		UAnimMontage* AMChar;
+	UAnimMontage* AMChar;
 };
 
 /**

@@ -44,7 +44,7 @@ void ABattleState::SpawnTiles()
 		//UE_LOG(LogTemp, Warning, TEXT("Loaded UStaticMesh : %s"), *entity->GetName());
 	}
 	FVector floorLoc = Floor->GetActorTransform().GetLocation() + FVector(-100.0 * (BattleColumn-1), -100.0 * (BattleRow -1), 50); //좌상단 기준
-	UE_LOG(LogTemp, Warning, TEXT("Floor - X: %f, Y: %f"), floorLoc.X, floorLoc.Y);
+	//UE_LOG(LogTemp, Warning, TEXT("Floor - X: %f, Y: %f"), floorLoc.X, floorLoc.Y);
 
 	UWorld* world = GetWorld();
 	int tID = 0;
@@ -64,7 +64,7 @@ void ABattleState::SpawnTiles()
 		tID *= 10;
 	}
 
-	CharacterTile.Init(0, BattleRow * BattleColumn);
+	CharacterTile.Init(nullptr, BattleRow * BattleColumn);
 }
 
 void ABattleState::SpawnCharacter()
@@ -78,7 +78,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
 		BTChar->SetPlayerCharacter(true);
 		Player.Add(BTChar);
-		CharacterTile[locIndex] = 1;
+		CharacterTile[locIndex] = BTChar;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 
@@ -88,8 +88,9 @@ void ABattleState::SpawnCharacter()
 		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ABattleCharacter>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
 		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
+		BTChar->SetPlayerCharacter(false);
 		Enemy.Add(BTChar);
-		CharacterTile[locIndex] = 2;
+		CharacterTile[locIndex] = BTChar;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
 	}
 }
@@ -110,6 +111,9 @@ void ABattleState::ClickTile(AActor* aActor)
 		CurrentTileID = selectedID;
 		TileMap[IDToIndex(CurrentTileID)]->ChangeTileSM(ETileType::Selected); //Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTileID);
+
+		AvailableTileSM(CurrentTileID);
+		//이동가능한 타일 표시 + 공격가능한 적의 타일도 표시
 	}
 	else
 	{
@@ -119,23 +123,55 @@ void ABattleState::ClickTile(AActor* aActor)
 		{
 			TileMap[IDToIndex(CurrentTileID)]->ChangeTileSM(ETileType::Current);
 			CurrentTileID = -1;
+
+			TileMap[IDToIndex(AttackTileID)]->ChangeTileSM(ETileType::Idle);
+			AttackTileID = -1;
 			UE_LOG(LogTemp, Warning, TEXT("Cancle Move : %d"), selectedID);
 			return;
 		}
 
-		//int targetTileIndex = IDToIndex(selected);
-		if (CharacterTile[IDToIndex(selectedID)] != 0) //다른 플레이어가 서있는 곳을 클릭한 경우
+		int targetTileIndex = IDToIndex(selectedID);
+		if (AttackTileID != -1) //적군이 클릭 된 상태
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selectedID);
-			return;
+			if (CharacterTile[targetTileIndex] == nullptr) //공격 가능한 위치인 경우 (아직 구현 안됨)
+			{
+				AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
+			}
 		}
-		//적군 클릭했을 땐 공격하도록 구현해야함
-
-
-		MoveTile(CurrentTileID, selectedID, Player);
-
-		CurrentTileID = -1;
+		else
+		{
+			if (CharacterTile[targetTileIndex] == nullptr)
+			{
+				MoveTile(CurrentTileID, selectedID, Player);
+			}
+			else if (CharacterTile[targetTileIndex]->GetIsPlayer()) //다른 플레이어가 서있는 곳을 클릭한 경우
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selectedID);
+				return;
+			}
+			else if (!CharacterTile[targetTileIndex]->GetIsPlayer()) //적군이 서있는 곳을 클릭한 경우
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%d Enemy Attack"), selectedID);
+				AttackTileSM(selectedID);
+				return;
+			}
+		}
 	}
+}
+
+void ABattleState::ClearTileSM()
+{
+
+}
+void ABattleState::AvailableTileSM(int PlayerID)
+{
+
+}
+void ABattleState::AttackTileSM(int TargetID)
+{
+	AttackTileID = TargetID;
+
+	TileMap[IDToIndex(AttackTileID)]->ChangeTileSM(ETileType::Enemy);
 }
 
 int ABattleState::IDToIndex(int inTileID)
@@ -238,7 +274,7 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 	{
 		ReverseRoute.Add(v);
 		v = parent[v];
-		UE_LOG(LogTemp, Warning, TEXT("Now V: %d"), v);
+		//UE_LOG(LogTemp, Warning, TEXT("Now V: %d"), v);
 	}
 
 	while (ReverseRoute.Num() != 0)
@@ -248,10 +284,10 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 	}
 
 	//Route의 맨 첫번째는 시작위치가 저장되어 있어 지워도 될듯
-	for (auto vec : Route)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("(%f %f)"), vec.X, vec.Y);
-	}
+	//for (auto vec : Route)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("(%f %f)"), vec.X, vec.Y);
+	//}
 }
 
 void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharacter*>& BCharacter)
@@ -262,8 +298,20 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
 
 	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //캐릭터 이동
-	CharacterTile[IDToIndex(StartTileID)] = 0; //원래 자리는 공백으로
+	CharacterTile[IDToIndex(StartTileID)] = nullptr; //원래 자리는 공백으로
 	BCharacter[CurrentTurn]->SetTileLocationID(EndTileID);
 
 	TileMap[IDToIndex(StartTileID)]->ChangeTileSM(ETileType::Idle);
+	CurrentTileID = -1;
+}
+
+void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter)
+{
+	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
+	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->AttackCharacter();
+
+	MoveTile(StartTile, EndTile, BCharacter);
+
+	TileMap[IDToIndex(AttackTileID)]->ChangeTileSM(ETileType::Idle);
+	AttackTileID = -1;
 }

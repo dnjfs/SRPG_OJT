@@ -29,6 +29,14 @@ ATileCell::ATileCell()
 	if (SM_SELECTED.Succeeded())
 		SMSelected = SM_SELECTED.Object;
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_AVAILABLE(TEXT("StaticMesh'/Game/StaticMesh/Plane_Available.Plane_Available'"));
+	if (SM_AVAILABLE.Succeeded())
+		SMAvailable = SM_AVAILABLE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_ENEMY(TEXT("StaticMesh'/Game/StaticMesh/Plane_Enemy.Plane_Enemy'"));
+	if (SM_ENEMY.Succeeded())
+		SMEnemy = SM_ENEMY.Object;
+
 	
 	OnClicked.AddDynamic(this, &ATileCell::ClickTile);
 }
@@ -67,4 +75,8 @@ void ATileCell::ChangeTileSM(ETileType inType)
 		Cell->SetStaticMesh(SMCurrent);
 	else if (inType == ETileType::Selected)
 		Cell->SetStaticMesh(SMSelected);
+	else if (inType == ETileType::Available)
+		Cell->SetStaticMesh(SMAvailable);
+	else if (inType == ETileType::Enemy)
+		Cell->SetStaticMesh(SMEnemy);
 }

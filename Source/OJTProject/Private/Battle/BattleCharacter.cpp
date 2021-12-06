@@ -3,6 +3,7 @@
 
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
+#include "Battle/PlayerAnimInstance.h"
 
 ABattleCharacter::ABattleCharacter()
 {
@@ -36,6 +37,11 @@ void ABattleCharacter::PostInitializeComponents()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterRow->SKChar);
 		GetMesh()->SetAnimInstanceClass(CharacterRow->AIChar);
+		Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance())->SetAttackMontage(CharacterRow->AMChar);
+		//UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::PostInitializeComponents(): Complete Load Asset %s"), *CharacterRow->AMChar->GetName());
+
+		Cast<ABattleAIController>(GetController())->SetEndAttackDelegate();
+		Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance())->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter);
 	}
 	else
 	{
@@ -60,6 +66,15 @@ void ABattleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::SetupPlayerInputComponent"));
 }
 
+float ABattleCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	ChangeHP(FinalDamage);
+
+	return FinalDamage;
+}
+
 void ABattleCharacter::SetTileLocationID(int onLoc)
 {
 	TileLocID = onLoc;
@@ -76,4 +91,31 @@ void ABattleCharacter::SetPlayerCharacter(bool inIsPlayer)
 bool ABattleCharacter::GetIsPlayer()
 {
 	return bIsPlayer;
+}
+
+void ABattleCharacter::SetTargetCharacter(ABattleCharacter* inTarget)
+{
+	TargetCharacter = inTarget;
+}
+
+void ABattleCharacter::AttackCharacter()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s Attack %s"), *GetName(), *TargetCharacter->GetName());
+	//공격 방향으로 회전
+	//타겟 받아서 TakeDamage() 호출
+
+	FDamageEvent DamageEvent;
+	TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this);
+
+	//TargetCharacter = nullptr; //공격완료 후 대상 초기화
+}
+
+void ABattleCharacter::ChangeHP(float Damage)
+{
+	HP -= Damage;
+	if(HP < 0)
+	{
+		HP = 0;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("%s's HP is %d"), *GetName(), HP);
 }

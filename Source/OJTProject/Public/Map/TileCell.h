@@ -13,6 +13,8 @@ enum class ETileType
 	Idle,
 	Current,
 	Selected,
+	Available,
+	Enemy,
 };
 
 UCLASS()
@@ -52,6 +54,10 @@ private:
 	UStaticMesh* SMCurrent;
 	UPROPERTY()
 	UStaticMesh* SMSelected;
+	UPROPERTY()
+	UStaticMesh* SMAvailable;
+	UPROPERTY()
+	UStaticMesh* SMEnemy;
 
 	UPROPERTY()
 	int32 TileID = -1; //За*10 + ї­
