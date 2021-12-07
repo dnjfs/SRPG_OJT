@@ -3,6 +3,7 @@
 
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ABattleCharacter::ABattleCharacter()
 {
@@ -103,7 +104,9 @@ void ABattleCharacter::SetTargetCharacter(ABattleCharacter* inTarget)
 
 void ABattleCharacter::PlayAttackAnimation()
 {
-	//공격 방향으로 회전
+	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetCharacter->GetActorLocation());
+	SetActorRotation(rotator); //타겟 방향으로 회전
+
 	PlayerAnim->PlayAttackMontage();
 }
 
