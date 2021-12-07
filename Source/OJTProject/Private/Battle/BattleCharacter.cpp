@@ -11,10 +11,6 @@ ABattleCharacter::ABattleCharacter()
 
 	AIControllerClass = ABattleAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	CharacterType = ECharacterType::PLAYER1;
-	HP = 100;
-	Power = 40;
 }
 
 void ABattleCharacter::PostInitializeComponents()
@@ -37,9 +33,9 @@ void ABattleCharacter::PostInitializeComponents()
 		GetMesh()->SetSkeletalMesh(CharacterRow->SKChar);
 		GetMesh()->SetAnimInstanceClass(CharacterRow->AIChar);
 		PlayerAnim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
-		PlayerAnim->SetAttackMontage(CharacterRow->AMAttack);
-		PlayerAnim->SetSkillMontage(CharacterRow->AMSkill);
-		PlayerAnim->SetHitMontage(CharacterRow->AMHit);
+		//PlayerAnim->SetAttackMontage(CharacterRow->AMAttack);
+		//PlayerAnim->SetSkillMontage(CharacterRow->AMSkill);
+		//PlayerAnim->SetHitMontage(CharacterRow->AMHit);
 		//UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::PostInitializeComponents(): Complete Load Asset %s"), *CharacterRow->AMChar->GetName());
 
 		Cast<ABattleAIController>(GetController())->SetEndAttackDelegate();
@@ -75,6 +71,11 @@ float ABattleCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	ChangeHP(FinalDamage);
 
 	return FinalDamage;
+}
+
+void ABattleCharacter::SetCharacterType(ECharacterType inType)
+{
+	CharacterType = inType;
 }
 
 void ABattleCharacter::SetTileLocationID(int onLoc)

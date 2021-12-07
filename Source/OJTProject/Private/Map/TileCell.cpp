@@ -37,6 +37,10 @@ ATileCell::ATileCell()
 	if (SM_ENEMY.Succeeded())
 		SMEnemy = SM_ENEMY.Object;
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_ATTACK(TEXT("StaticMesh'/Game/StaticMesh/Plane_Attack.Plane_Attack'"));
+	if (SM_ATTACK.Succeeded())
+		SMAttack = SM_ATTACK.Object;
+
 	
 	OnClicked.AddDynamic(this, &ATileCell::ClickTile);
 }
@@ -69,14 +73,22 @@ int ATileCell::GetTileID()
 
 void ATileCell::ChangeTileSM(ETileType inType)
 {
-	if(inType == ETileType::Idle)
+	TileType = inType;
+
+	if(TileType == ETileType::Idle)
 		Cell->SetStaticMesh(SMIdle);
-	else if(inType == ETileType::Current)
+	else if(TileType == ETileType::Current)
 		Cell->SetStaticMesh(SMCurrent);
-	else if (inType == ETileType::Selected)
+	else if (TileType == ETileType::Selected)
 		Cell->SetStaticMesh(SMSelected);
-	else if (inType == ETileType::Available)
+	else if (TileType == ETileType::Available)
 		Cell->SetStaticMesh(SMAvailable);
-	else if (inType == ETileType::Enemy)
+	else if (TileType == ETileType::Enemy)
 		Cell->SetStaticMesh(SMEnemy);
+	else if (TileType == ETileType::Attack)
+		Cell->SetStaticMesh(SMAttack);
+}
+ETileType ATileCell::GetTileType()
+{
+	return TileType;
 }

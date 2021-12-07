@@ -15,6 +15,7 @@ enum class ETileType
 	Selected,
 	Available,
 	Enemy,
+	Attack,
 };
 
 UCLASS()
@@ -41,6 +42,7 @@ public:
 	void ClickTile(AActor* TileActor, FKey TileKey);
 
 	void ChangeTileSM(ETileType inType);
+	ETileType GetTileType();
 
 	FOnTileSelectedDelegate OnTileSelectedDelegate;
 
@@ -58,7 +60,10 @@ private:
 	UStaticMesh* SMAvailable;
 	UPROPERTY()
 	UStaticMesh* SMEnemy;
-
 	UPROPERTY()
+	UStaticMesh* SMAttack;
+
 	int32 TileID = -1; //За*10 + ї­
+
+	ETileType TileType = ETileType::Idle;
 };

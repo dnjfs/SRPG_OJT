@@ -32,6 +32,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	void SetCharacterType(ECharacterType inType);
+
 	void PlayAttackAnimation();
 	void AttackCharacter();
 
@@ -41,20 +43,27 @@ public:
 	void SetPlayerCharacter(bool inIsPlayer);
 	bool GetIsPlayer();
 
+	int32 GetMoveRange() { return MoveRange; }
+	int32 GetAttackRange() { return AttackRange; }
+
 	void SetTargetCharacter(ABattleCharacter* inTarget);
 	void ChangeHP(float Damage);
 	void DeadCharacter();
 
 	FOnNotifyDeadDelegate OnNotifyDeadDelegate;
 
-private:
+protected:
 	ECharacterType CharacterType = ECharacterType::NONE;
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
-	int32 TileLocID = -1; //타일 ID
 
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess = true))
 	int32 HP = 0;
 	int32 Power = 0;
+	int32 MoveRange = 0;
+	int32 AttackRange = 0;
+
+private:
+	int32 TileLocID = -1; //타일 ID
 
 	UPlayerAnimInstance* PlayerAnim;
 	ABattleCharacter* TargetCharacter;

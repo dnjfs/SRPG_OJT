@@ -27,8 +27,8 @@ public:
 	void ClickTile(AActor* aActor);
 
 	void ClearTileSM(); //타일 스태틱메시 초기화
-	void AvailableTileSM(int PlayerID); //선택한 캐릭터가 이동 가능한 타일 표시
-	void AttackTileSM(int TargetID); //타겟에서 공격 가능한 타일 표시
+	void AvailableTileSM(ABattleCharacter* CurrentPlayer); //선택한 캐릭터가 이동 가능한 타일 표시
+	void AttackTileSM(ABattleCharacter* CurrentPlayer, int TargetID); //타겟에서 공격 가능한 타일 표시
 
 	int IDToIndex(int inTileID);
 
@@ -68,9 +68,11 @@ protected:
 private:
 	struct FOJTLevelData* CurrentLevelData;
 
-	int32 CurrentTileID = -1;
-	int32 AttackTileID = -1;
-	int32 CurrentTurn = -1;
+	int32 PlayerTileID = -1; //현재 턴의 플레이어가 서있는 타일
+	int32 CurrentTileID = -1; //플레이어 턴에 선택한 타일
+	int32 AttackTileID = -1; //공격할 대상의 타일
+
+	int32 CurrentTurn = -1; //턴 부여용
 	int32 TurnCount = 0; //플레이어의 턴 카운팅
 
 	bool bIsRunBehavior = false;
