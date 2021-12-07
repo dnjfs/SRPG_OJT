@@ -42,7 +42,7 @@ struct FCharacterTable : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FCharacterTable() : CharType(ECharacterType::NONE), SKChar(nullptr), AMChar(nullptr) {};
+	FCharacterTable() : CharType(ECharacterType::NONE), SKChar(nullptr), AMAttack(nullptr), AMSkill(nullptr), AMHit(nullptr) {};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	ECharacterType CharType;
@@ -54,7 +54,13 @@ public:
 	TSubclassOf<UAnimInstance> AIChar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	UAnimMontage* AMChar;
+	UAnimMontage* AMAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UAnimMontage* AMSkill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UAnimMontage* AMHit;
 };
 
 /**

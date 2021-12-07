@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTask_MoveToTile::ExecuteTask(UBehaviorTreeComponent& Owne
 	if(!Cast<ABattleAIController>(OwnerComp.GetAIOwner())->GetNextDest())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Finish Move"));
-		Cast<ABattleAIController>(OwnerComp.GetAIOwner())->AttackAnimation(); //공격 애니메이션 실행
+		Cast<ABattleAIController>(OwnerComp.GetAIOwner())->PostMovement(); //공격 애니메이션 실행
 
 		return EBTNodeResult::Failed; //태스크를 수행했지만 실패
 		//return EBTNodeResult::Aborted; //태스크 실행 중에 중단

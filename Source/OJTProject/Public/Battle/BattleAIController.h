@@ -33,7 +33,7 @@ public:
 	void AttackCharacter();
 
 	bool GetNextDest();
-	void AttackAnimation();
+	void PostMovement();
 
 	void StartAIBehavior();
 	void EndOfAIBehavior();

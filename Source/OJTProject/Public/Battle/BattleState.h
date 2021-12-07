@@ -42,6 +42,9 @@ public:
 	void MoveTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter);
 	void AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter);
 
+	UFUNCTION()
+	void DeleteCharacter(int TileLocID); //BattleCharacter에서 델리게이트로 호출
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()
@@ -68,6 +71,7 @@ private:
 	int32 CurrentTileID = -1;
 	int32 AttackTileID = -1;
 	int32 CurrentTurn = -1;
+	int32 TurnCount = 0; //플레이어의 턴 카운팅
 
 	bool bIsRunBehavior = false;
 	bool bIsPlayerTurn = true;

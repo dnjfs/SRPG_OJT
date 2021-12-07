@@ -80,14 +80,15 @@ bool ABattleAIController::GetNextDest()
 	return false;
 }
 
-void ABattleAIController::AttackAnimation()
+void ABattleAIController::PostMovement()
 {
 	//이동 완료 상태
 	
 	if (BehaviorType == EBehaviorType::ATTACK) //공격하는 행동일 경우
 	{
 		//Attack 애니메이션
-		Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->PlayAttackMontage(); //애니메이션 중 AnimNotify로 델리게이트를 이용하여 TakeDamage() 호출
+		Cast<ABattleCharacter>(GetCharacter())->PlayAttackAnimation();
+		//Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->PlayAttackMontage(); //애니메이션 중 AnimNotify로 델리게이트를 이용하여 TakeDamage() 호출
 	}
 	//else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
 	//{

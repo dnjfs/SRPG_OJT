@@ -22,6 +22,8 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	void SetAttackMontage(UAnimMontage* inAttackMontage);
+	void SetSkillMontage(UAnimMontage* inSkillMontage);
+	void SetHitMontage(UAnimMontage* inHitMontage);
 
 	UFUNCTION(BlueprintCallable)
 	void AnimNotify_AttackHit();
@@ -30,6 +32,10 @@ public:
 	void AnimNotify_MontageEnded();
 
 	void PlayAttackMontage();
+	void PlaySkillMontage();
+	void PlayHitMontage();
+
+	void SetIsDead();
 
 public:
 	FOnAttackHitDelegate OnAttackHit; //캐릭터에서 사용
@@ -39,9 +45,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Pawn, Meta=(AllowPrivateAccess=true))
 	float CurrentPawnSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SkillMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Hit, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* HitMontage;
 };

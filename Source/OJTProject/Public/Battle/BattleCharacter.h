@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Map/MapGameInstance.h"
+#include "Battle/PlayerAnimInstance.h"
 #include "BattleCharacter.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnNotifyDeadDelegate, int, TileLocID);
 
 UCLASS()
 class OJTPROJECT_API ABattleCharacter : public ACharacter
@@ -29,6 +32,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	void PlayAttackAnimation();
 	void AttackCharacter();
 
 	void SetTileLocationID(int onLocID);
@@ -39,6 +43,9 @@ public:
 
 	void SetTargetCharacter(ABattleCharacter* inTarget);
 	void ChangeHP(float Damage);
+	void DeadCharacter();
+
+	FOnNotifyDeadDelegate OnNotifyDeadDelegate;
 
 private:
 	ECharacterType CharacterType = ECharacterType::NONE;
@@ -49,5 +56,6 @@ private:
 	int32 HP = 0;
 	int32 Power = 0;
 
+	UPlayerAnimInstance* PlayerAnim;
 	ABattleCharacter* TargetCharacter;
 };

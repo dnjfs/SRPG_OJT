@@ -24,6 +24,14 @@ void UPlayerAnimInstance::SetAttackMontage(UAnimMontage* inAttackMontage)
 {
 	AttackMontage = inAttackMontage;
 }
+void UPlayerAnimInstance::SetSkillMontage(UAnimMontage* inSkillMontage)
+{
+	SkillMontage = inSkillMontage;
+}
+void UPlayerAnimInstance::SetHitMontage(UAnimMontage* inHitMontage)
+{
+	HitMontage = inHitMontage;
+}
 
 void UPlayerAnimInstance::AnimNotify_AttackHit()
 {
@@ -38,4 +46,17 @@ void UPlayerAnimInstance::AnimNotify_MontageEnded()
 void UPlayerAnimInstance::PlayAttackMontage()
 {
 	Montage_Play(AttackMontage, 1.0f);
+}
+void UPlayerAnimInstance::PlaySkillMontage()
+{
+	Montage_Play(SkillMontage, 1.0f);
+}
+void UPlayerAnimInstance::PlayHitMontage()
+{
+	Montage_Play(HitMontage, 1.0f);
+}
+
+void UPlayerAnimInstance::SetIsDead()
+{
+	bIsDead = true;
 }

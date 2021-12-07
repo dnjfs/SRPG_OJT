@@ -69,7 +69,7 @@ void ABattleState::SpawnTiles()
 
 void ABattleState::SpawnCharacter()
 {
-	int n = 4; //생성할 캐릭터 수
+	int n = 2; //생성할 캐릭터 수
 	for(int i = 0; i < n; i++) //캐릭터 생성
 	{
 		int32 locIndex = BattleColumn * i;
@@ -77,6 +77,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Player"+FString::FromInt(i));
 		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
 		BTChar->SetPlayerCharacter(true);
+		BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
 		Player.Add(BTChar);
 		CharacterTile[locIndex] = BTChar;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
@@ -89,6 +90,7 @@ void ABattleState::SpawnCharacter()
 		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
 		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
 		BTChar->SetPlayerCharacter(false);
+		BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
 		Enemy.Add(BTChar);
 		CharacterTile[locIndex] = BTChar;
 		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
@@ -186,6 +188,14 @@ void ABattleState::PlayTurn()
 
 void ABattleState::NextTurn()
 {
+	if (Player.Num() == 0 || Enemy.Num() == 0)
+	{
+		//게임 종료
+		UE_LOG(LogTemp, Error, TEXT("---------- Game End ----------"));
+		UE_LOG(LogTemp, Error, TEXT("Turn Count: %d"), TurnCount);
+		return;
+	}
+
 	if (bIsPlayerTurn && ++CurrentTurn >= Player.Num()) //플레이어의 턴 모두 종료
 	{
 		bIsPlayerTurn = false;
@@ -200,11 +210,12 @@ void ABattleState::NextTurn()
 	if(bIsPlayerTurn)
 	{
 		TileMap[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
+		TurnCount++;
 	}
-	else
-	{
-		TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
-	}
+	//else
+	//{
+	//	TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
+	//}
 		
 	if(bIsPlayerTurn) //플레이어 턴이 된 경우 입력 가능하도록
 	{
@@ -213,7 +224,7 @@ void ABattleState::NextTurn()
 	else //적군 턴 시작
 	{
 		//적군 AI 실행
-		MoveTile(Enemy[CurrentTurn]->GetTileLocationID(), Enemy[CurrentTurn]->GetTileLocationID() - 1, Enemy);
+		MoveTile(Enemy[CurrentTurn]->GetTileLocationID(), Enemy[CurrentTurn]->GetTileLocationID() - 1, Enemy); //왼쪽으로 한 칸 이동 (임시)
 	}
 }
 
@@ -314,4 +325,24 @@ void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacte
 
 	TileMap[IDToIndex(AttackTileID)]->ChangeTileSM(ETileType::Idle);
 	AttackTileID = -1;
+}
+
+void ABattleState::DeleteCharacter(int TileLocID)
+{
+	ABattleCharacter* DeadCharacter = CharacterTile[IDToIndex(TileLocID)];
+	if(DeadCharacter != nullptr)
+	{
+		if (DeadCharacter->GetIsPlayer())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Remove (%s)"), *Player[Player.Find(DeadCharacter)]->GetName());
+			Player.Remove(DeadCharacter);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Remove (%s)"), *Enemy[Enemy.Find(DeadCharacter)]->GetName());
+			Enemy.Remove(DeadCharacter);
+		}
+
+		CharacterTile[IDToIndex(TileLocID)] = nullptr;
+	}
 }
