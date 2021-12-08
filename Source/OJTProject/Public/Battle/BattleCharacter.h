@@ -57,7 +57,7 @@ protected:
 	ECharacterType CharacterType = ECharacterType::NONE;
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
 
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleInstanceOnly)
 	int32 HP = 0;
 	int32 Power = 0;
 	int32 MoveRange = 0;

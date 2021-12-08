@@ -135,7 +135,7 @@ void ABattleCharacter::ChangeHP(float Damage)
 	if(HP > 0)
 	{
 		HP -= Damage;
-		if(HP < 0)
+		if(HP <= 0)
 		{
 			HP = 0;
 			DeadCharacter();
