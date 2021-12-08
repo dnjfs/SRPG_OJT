@@ -39,6 +39,8 @@ public:
 	void PlayAttackAnimation();
 	void PlaySkillAnimation();
 	void AttackCharacter();
+	void SkillCharacter(); //스킬을 쓸 땐 노티파이에서 이걸 불러오면 될지도.. 데미지도 다르게 할 수 있고 사운드, 이펙트도 다르게 할 수 있을 듯 함
+	//혹은 함수 새로 안만들고 Enum으로 스테이트를 다르게 하여 나누면 될듯??
 
 	void SetTileLocationID(int onLocID);
 	int32 GetTileLocationID();
@@ -65,6 +67,7 @@ protected:
 	int32 Power = 0;
 	int32 MoveRange = 0;
 	int32 AttackRange = 0;
+	float Coefficient = 0; //스킬에서 공격력 계수
 
 private:
 	int32 TileLocID = -1; //타일 ID

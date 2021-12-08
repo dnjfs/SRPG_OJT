@@ -19,23 +19,27 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		CurrentPawnSpeed = Pawn->GetVelocity().Size();
 	}
 }
-
-void UPlayerAnimInstance::SetAttackMontage(UAnimMontage* inAttackMontage)
-{
-	AttackMontage = inAttackMontage;
-}
-void UPlayerAnimInstance::SetSkillMontage(UAnimMontage* inSkillMontage)
-{
-	SkillMontage = inSkillMontage;
-}
-void UPlayerAnimInstance::SetHitMontage(UAnimMontage* inHitMontage)
-{
-	HitMontage = inHitMontage;
-}
+//
+//void UPlayerAnimInstance::SetAttackMontage(UAnimMontage* inAttackMontage)
+//{
+//	AttackMontage = inAttackMontage;
+//}
+//void UPlayerAnimInstance::SetSkillMontage(UAnimMontage* inSkillMontage)
+//{
+//	SkillMontage = inSkillMontage;
+//}
+//void UPlayerAnimInstance::SetHitMontage(UAnimMontage* inHitMontage)
+//{
+//	HitMontage = inHitMontage;
+//}
 
 void UPlayerAnimInstance::AnimNotify_AttackHit()
 {
 	OnAttackHit.Broadcast();
+}
+void UPlayerAnimInstance::AnimNotify_SkillHit()
+{
+	OnSkillHit.Broadcast();
 }
 
 void UPlayerAnimInstance::AnimNotify_MontageEnded()

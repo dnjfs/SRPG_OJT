@@ -57,6 +57,7 @@ void ABattleCharacter::PostInitializeComponents()
 
 		Cast<ABattleAIController>(GetController())->SetEndAttackDelegate();
 		PlayerAnim->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter);
+		PlayerAnim->OnSkillHit.AddUObject(this, &ABattleCharacter::SkillCharacter);
 	}
 	else
 	{
@@ -144,10 +145,15 @@ void ABattleCharacter::AttackCharacter()
 	FDamageEvent DamageEvent;
 	TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //타겟 받아서 TakeDamage() 호출
 
-	//대상에 이펙트 출력
-	//사운드 출력
-
 	//TargetCharacter = nullptr; //공격완료 후 대상 초기화
+}
+
+void ABattleCharacter::SkillCharacter()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s Skill %s"), *GetName(), *TargetCharacter->GetName());
+
+	FDamageEvent DamageEvent;
+	TargetCharacter->TakeDamage(Power * Coefficient, DamageEvent, GetController(), this);
 }
 
 void ABattleCharacter::ChangeHP(float Damage)

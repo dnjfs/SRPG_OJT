@@ -7,6 +7,7 @@
 #include "PlayerAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnSkillHitDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnEndAttackDelegate);
 
 /**
@@ -21,12 +22,14 @@ public:
 	UPlayerAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	void SetAttackMontage(UAnimMontage* inAttackMontage);
-	void SetSkillMontage(UAnimMontage* inSkillMontage);
-	void SetHitMontage(UAnimMontage* inHitMontage);
+	//void SetAttackMontage(UAnimMontage* inAttackMontage);
+	//void SetSkillMontage(UAnimMontage* inSkillMontage);
+	//void SetHitMontage(UAnimMontage* inHitMontage);
 
 	UFUNCTION(BlueprintCallable)
 	void AnimNotify_AttackHit();
+	UFUNCTION(BlueprintCallable)
+	void AnimNotify_SkillHit();
 
 	UFUNCTION(BlueprintCallable)
 	void AnimNotify_MontageEnded();
@@ -39,6 +42,7 @@ public:
 
 public:
 	FOnAttackHitDelegate OnAttackHit; //캐릭터에서 사용
+	FOnSkillHitDelegate OnSkillHit; //캐릭터에서 사용
 	FOnEndAttackDelegate OnEndAttack; //AI컨트롤러에서 사용
 	
 private:

@@ -153,8 +153,9 @@ void ABattleState::ClickTile(AActor* aActor)
 		{
 			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //공격 가능한 위치인 경우
 			{
-				SkillTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
-				//AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
+				//스테이트에 따라 공격할 건지 스킬을 쓸 건지 구분
+				AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
+				//SkillTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
 			}
 		}
 		else
