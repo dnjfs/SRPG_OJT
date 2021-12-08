@@ -24,6 +24,7 @@ EBTNodeResult::Type UBTTask_MoveToTile::ExecuteTask(UBehaviorTreeComponent& Owne
 		UE_LOG(LogTemp, Warning, TEXT("Finish Move"));
 		Cast<ABattleAIController>(OwnerComp.GetAIOwner())->PostMovement(); //공격 애니메이션 실행
 
+		//FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); //이동 완료, 태스크 종료
 		return EBTNodeResult::Failed; //태스크를 수행했지만 실패
 		//return EBTNodeResult::Aborted; //태스크 실행 중에 중단
 	}

@@ -144,6 +144,9 @@ void ABattleCharacter::AttackCharacter()
 	FDamageEvent DamageEvent;
 	TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //타겟 받아서 TakeDamage() 호출
 
+	//대상에 이펙트 출력
+	//사운드 출력
+
 	//TargetCharacter = nullptr; //공격완료 후 대상 초기화
 }
 
@@ -153,6 +156,9 @@ void ABattleCharacter::ChangeHP(float Damage)
 	{
 		CurrentHP -= Damage;
 		HPBar->SetPercent((float)CurrentHP / MaxHP);
+		
+		//받은 데미지 UI로 출력, 1초 뒤에 사라지도록
+
 		if(CurrentHP <= 0) //HP < KINDA_SMALL_NUMBER
 		{
 			CurrentHP = 0;
