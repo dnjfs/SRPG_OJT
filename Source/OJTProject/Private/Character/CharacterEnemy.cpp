@@ -7,7 +7,7 @@ ACharacterEnemy::ACharacterEnemy()
 {
 	CharacterType = ECharacterType::ENEMY;
 	bIsPlayer = false;
-	HP = 100;
+	MaxHP = 100;
 	Power = 40;
 	MoveRange = 3;
 	AttackRange = 1;

@@ -7,7 +7,7 @@ ACharacterLong::ACharacterLong()
 {
 	CharacterType = ECharacterType::PLAYER2;
 	bIsPlayer = true;
-	HP = 100;
+	MaxHP = 100;
 	Power = 60;
 	MoveRange = 3;
 	AttackRange = 2;

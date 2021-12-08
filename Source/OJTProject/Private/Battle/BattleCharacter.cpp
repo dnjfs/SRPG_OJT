@@ -4,6 +4,7 @@
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/WidgetComponent.h"
 
 ABattleCharacter::ABattleCharacter()
 {
@@ -14,11 +15,24 @@ ABattleCharacter::ABattleCharacter()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	GetCharacterMovement()->MaxAcceleration = 10000;
 	GetCharacterMovement()->MaxWalkSpeed= 1000;
+
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+	HPBarWidget->SetupAttachment(GetMesh());
+	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("WidgetBlueprint'/Game/UMG/UI_HPBar.UI_HPBar_C'"));
+	if (UI_HUD.Succeeded())
+	{
+		HPBarWidget->SetWidgetClass(UI_HUD.Class);
+		HPBarWidget->SetDrawSize(FVector2D(150.0f, 50.0f));
+	}
 }
 
 void ABattleCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	CurrentHP = MaxHP; //현재 HP는 풀피로
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -53,6 +67,9 @@ void ABattleCharacter::PostInitializeComponents()
 void ABattleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HPBar = Cast<UProgressBar>(HPBarWidget->GetUserWidgetObject()->GetWidgetFromName(TEXT("PB_HPBAR")));
+	HPBar->SetPercent((float)CurrentHP / MaxHP);
 }
 
 void ABattleCharacter::Tick(float DeltaTime)
@@ -132,18 +149,19 @@ void ABattleCharacter::AttackCharacter()
 
 void ABattleCharacter::ChangeHP(float Damage)
 {
-	if(HP > 0)
+	if(CurrentHP > 0)
 	{
-		HP -= Damage;
-		if(HP <= 0)
+		CurrentHP -= Damage;
+		HPBar->SetPercent((float)CurrentHP / MaxHP);
+		if(CurrentHP <= 0) //HP < KINDA_SMALL_NUMBER
 		{
-			HP = 0;
+			CurrentHP = 0;
 			DeadCharacter();
 
 			return;
 		}
 		PlayerAnim->PlayHitMontage();
-		UE_LOG(LogTemp, Warning, TEXT("%s's HP is %d"), *GetName(), HP);
+		UE_LOG(LogTemp, Warning, TEXT("%s's HP is %d"), *GetName(), CurrentHP);
 	}
 }
 

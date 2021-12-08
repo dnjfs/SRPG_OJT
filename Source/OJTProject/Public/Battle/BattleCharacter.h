@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/ProgressBar.h"
+
 #include "Map/MapGameInstance.h"
 #include "Battle/PlayerAnimInstance.h"
 #include "BattleCharacter.generated.h"
@@ -57,8 +59,9 @@ protected:
 	ECharacterType CharacterType = ECharacterType::NONE;
 	bool bIsPlayer = false; //플레이어 캐릭터 여부
 
-	UPROPERTY(VisibleInstanceOnly)
-	int32 HP = 0;
+	int32 MaxHP = 0;
+	UPROPERTY(Transient, VisibleInstanceOnly) //Transient로 직렬화에서 제외
+	int32 CurrentHP = 0;
 	int32 Power = 0;
 	int32 MoveRange = 0;
 	int32 AttackRange = 0;
@@ -68,4 +71,8 @@ private:
 
 	UPlayerAnimInstance* PlayerAnim;
 	ABattleCharacter* TargetCharacter;
+
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* HPBarWidget;
+	class UProgressBar* HPBar; //혹은 캐릭터 위젯 클래스를 만들어서 HP 바뀌면 델리게이트로 이벤트 전달하기?
 };
