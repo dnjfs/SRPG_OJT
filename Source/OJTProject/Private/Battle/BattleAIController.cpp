@@ -64,6 +64,10 @@ void ABattleAIController::AttackCharacter()
 	BehaviorType = EBehaviorType::ATTACK;
 	//this->TargetCharacter = inTargetCharacter; //캐릭터에서 직접 가지고 있음
 }
+void ABattleAIController::SkillCharacter()
+{
+	BehaviorType = EBehaviorType::SKILL;
+}
 
 bool ABattleAIController::GetNextDest()
 {
@@ -90,10 +94,10 @@ void ABattleAIController::PostMovement()
 		Cast<ABattleCharacter>(GetCharacter())->PlayAttackAnimation();
 		//Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->PlayAttackMontage(); //애니메이션 중 AnimNotify로 델리게이트를 이용하여 TakeDamage() 호출
 	}
-	//else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
-	//{
-		//Skill 애니메이션
-	//}
+	else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
+	{
+		Cast<ABattleCharacter>(GetCharacter())->PlaySkillAnimation();
+	}
 	else //공격을 할 필요가 없다면 비헤이비어 트리 종료
 	{
 		EndOfAIBehavior();

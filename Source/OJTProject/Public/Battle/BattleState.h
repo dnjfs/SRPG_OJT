@@ -41,6 +41,7 @@ public:
 	
 	void MoveTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter);
 	void AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter);
+	void SkillTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter);
 
 	UFUNCTION()
 	void DeleteCharacter(int TileLocID); //BattleCharacter에서 델리게이트로 호출

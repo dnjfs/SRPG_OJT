@@ -12,6 +12,8 @@ ABattleCharacter::ABattleCharacter()
 
 	AIControllerClass = ABattleAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	GetCharacterMovement()->MaxAcceleration = 10000;
+	GetCharacterMovement()->MaxWalkSpeed= 1000;
 }
 
 void ABattleCharacter::PostInitializeComponents()
@@ -108,6 +110,14 @@ void ABattleCharacter::PlayAttackAnimation()
 	SetActorRotation(rotator); //타겟 방향으로 회전
 
 	PlayerAnim->PlayAttackMontage();
+}
+
+void ABattleCharacter::PlaySkillAnimation()
+{
+	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetCharacter->GetActorLocation());
+	SetActorRotation(rotator); //타겟 방향으로 회전
+
+	PlayerAnim->PlaySkillMontage();
 }
 
 void ABattleCharacter::AttackCharacter()

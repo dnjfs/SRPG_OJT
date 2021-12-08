@@ -151,9 +151,10 @@ void ABattleState::ClickTile(AActor* aActor)
 		int targetTileIndex = IDToIndex(selectedID);
 		if (AttackTileID != -1) //적군이 클릭 된 상태
 		{
-			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //공격 가능한 위치인 경우 (아직 구현 안됨)
+			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //공격 가능한 위치인 경우
 			{
-				AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
+				SkillTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
+				//AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
 			}
 		}
 		else
@@ -471,6 +472,15 @@ void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacte
 {
 	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->AttackCharacter();
+
+	AttackTileID = -1;
+
+	MoveTile(StartTile, EndTile, BCharacter);
+}
+void ABattleState::SkillTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter)
+{
+	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
+	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->SkillCharacter();
 
 	AttackTileID = -1;
 

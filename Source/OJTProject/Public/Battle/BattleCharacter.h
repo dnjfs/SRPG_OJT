@@ -35,6 +35,7 @@ public:
 	void SetCharacterType(ECharacterType inType);
 
 	void PlayAttackAnimation();
+	void PlaySkillAnimation();
 	void AttackCharacter();
 
 	void SetTileLocationID(int onLocID);

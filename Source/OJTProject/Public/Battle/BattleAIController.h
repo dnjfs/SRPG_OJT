@@ -31,6 +31,7 @@ public:
 	void SetEndAttackDelegate();
 	void MoveCharacter(TArray<FVector> TargetLocation);
 	void AttackCharacter();
+	void SkillCharacter();
 
 	bool GetNextDest();
 	void PostMovement();
