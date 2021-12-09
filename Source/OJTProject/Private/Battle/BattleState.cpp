@@ -342,6 +342,8 @@ void ABattleState::NextTurn()
 		//게임 종료
 		UE_LOG(LogTemp, Error, TEXT("---------- Game End ----------"));
 		UE_LOG(LogTemp, Error, TEXT("Turn Count: %d"), TurnCount);
+
+		//결과 창 보여주기
 		return;
 	}
 
@@ -361,6 +363,8 @@ void ABattleState::NextTurn()
 		PlayerTileID = Player[CurrentTurn]->GetTileLocationID();
 		ClearTileSM(); //TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Current);
 		TurnCount++;
+
+		//해당 캐릭터의 스킬 UI를 화면에 버튼으로 보여주기
 	}
 	else
 	{

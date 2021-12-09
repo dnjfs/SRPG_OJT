@@ -80,7 +80,7 @@ private:
 	int32 TileLocID = -1; //타일 ID
 
 	UPlayerAnimInstance* PlayerAnim;
-	ABattleCharacter* TargetCharacter;
+	ABattleCharacter* TargetCharacter; //타겟은 TWeakObjectPtr로 잡는게 나을듯??
 
 	EAttackType AttackType = EAttackType::NONE;
 

@@ -7,4 +7,6 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PlayerControllerClass = ALobbyUIController::StaticClass();
+
+	//로비 입장 시 배경음악, 배경이미지 출력
 }

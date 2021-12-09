@@ -17,6 +17,8 @@ ABattleMode::ABattleMode()
 	PlayerStateClass = ABattlePlayerState::StaticClass();
 
 	UE_LOG(LogTemp, Warning, TEXT("ABattleMode::Constructor()"));
+
+	//일시정지 버튼 추가
 }
 
 void ABattleMode::PostInitializeComponents()
