@@ -3,8 +3,11 @@
 
 #include "Battle/BattleCharacter.h"
 #include "Battle/BattleAIController.h"
+
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/WidgetComponent.h"
+#include "Engine/TextRenderActor.h"
+#include "Components/TextRenderComponent.h"
 
 ABattleCharacter::ABattleCharacter()
 {
@@ -89,6 +92,7 @@ float ABattleCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	ChangeHP(FinalDamage);
+	PrintHitDamage(FinalDamage);
 
 	return FinalDamage;
 }
@@ -183,6 +187,28 @@ void ABattleCharacter::ChangeHP(float Damage)
 		PlayerAnim->PlayHitMontage();
 		UE_LOG(LogTemp, Warning, TEXT("%s's HP is %d"), *GetName(), CurrentHP);
 	}
+}
+void ABattleCharacter::PrintHitDamage(int Damage)
+{
+	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), NULL, TEXT("Blueprint'/Game/Blueprints/BP_HitText.BP_HitText'")));
+	if (!SpawnActor)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("CANT FIND OBJECT TO SPAWN")));
+		return;
+	}
+	UBlueprint* GeneratedBP = Cast<UBlueprint>(SpawnActor);
+	UClass* SpawnClass = SpawnActor->StaticClass();
+	//FActorSpawnParameters SpawnParams;
+	//SpawnParams.Owner = this;
+	//SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AActor* TextActor = GetWorld()->SpawnActor<AActor>(GeneratedBP->GeneratedClass, GetActorTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 90, 0));
+	if (Cast<UTextRenderComponent>(TextActor->GetRootComponent()) == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTextRenderComponent is NULL!!!!!!!!"));
+		return;
+	}
+	Cast<UTextRenderComponent>(TextActor->GetRootComponent())->SetText(FString::FromInt(Damage));
 }
 
 void ABattleCharacter::DeadCharacter()

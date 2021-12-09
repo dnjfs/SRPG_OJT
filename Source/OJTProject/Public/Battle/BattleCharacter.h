@@ -59,6 +59,7 @@ public:
 
 	void SetTargetCharacter(ABattleCharacter* inTarget);
 	void ChangeHP(float Damage);
+	void PrintHitDamage(int Damage);
 	void DeadCharacter();
 
 	FOnNotifyDeadDelegate OnNotifyDeadDelegate;
