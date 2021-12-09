@@ -90,13 +90,12 @@ void ABattleAIController::PostMovement()
 	
 	if (BehaviorType == EBehaviorType::ATTACK) //공격하는 행동일 경우
 	{
-		//Attack 애니메이션
-		Cast<ABattleCharacter>(GetCharacter())->PlayAttackAnimation();
-		//Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->PlayAttackMontage(); //애니메이션 중 AnimNotify로 델리게이트를 이용하여 TakeDamage() 호출
+		//Attack 상태로 변경하고 애니메이션 실행
+		Cast<ABattleCharacter>(GetCharacter())->SetAttackState();
 	}
 	else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
 	{
-		Cast<ABattleCharacter>(GetCharacter())->PlaySkillAnimation();
+		Cast<ABattleCharacter>(GetCharacter())->SetSkillState();
 	}
 	else //공격을 할 필요가 없다면 비헤이비어 트리 종료
 	{

@@ -37,10 +37,6 @@ void UPlayerAnimInstance::AnimNotify_AttackHit()
 {
 	OnAttackHit.Broadcast();
 }
-void UPlayerAnimInstance::AnimNotify_SkillHit()
-{
-	OnSkillHit.Broadcast();
-}
 
 void UPlayerAnimInstance::AnimNotify_MontageEnded()
 {

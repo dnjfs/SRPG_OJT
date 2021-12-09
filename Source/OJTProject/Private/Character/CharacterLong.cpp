@@ -11,4 +11,5 @@ ACharacterLong::ACharacterLong()
 	Power = 60;
 	MoveRange = 3;
 	AttackRange = 2;
+	Coefficient = 1.5f;
 }

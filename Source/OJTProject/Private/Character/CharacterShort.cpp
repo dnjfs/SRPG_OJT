@@ -11,4 +11,5 @@ ACharacterShort::ACharacterShort()
 	Power = 40;
 	MoveRange = 3;
 	AttackRange = 1;
+	Coefficient = 3.0f;
 }

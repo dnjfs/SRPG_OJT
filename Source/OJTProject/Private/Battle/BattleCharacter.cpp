@@ -56,8 +56,7 @@ void ABattleCharacter::PostInitializeComponents()
 		//UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::PostInitializeComponents(): Complete Load Asset %s"), *CharacterRow->AMChar->GetName());
 
 		Cast<ABattleAIController>(GetController())->SetEndAttackDelegate();
-		PlayerAnim->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter);
-		PlayerAnim->OnSkillHit.AddUObject(this, &ABattleCharacter::SkillCharacter);
+		PlayerAnim->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter); //애님 노티파이에서 호출
 	}
 	else
 	{
@@ -122,38 +121,47 @@ void ABattleCharacter::SetTargetCharacter(ABattleCharacter* inTarget)
 	TargetCharacter = inTarget;
 }
 
-void ABattleCharacter::PlayAttackAnimation()
+void ABattleCharacter::SetAttackState()
 {
-	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetCharacter->GetActorLocation());
-	SetActorRotation(rotator); //타겟 방향으로 회전
-
-	PlayerAnim->PlayAttackMontage();
+	AttackType = EAttackType::ATTACK;
+	PlayAnimationMontage();
+}
+void ABattleCharacter::SetSkillState()
+{
+	AttackType = EAttackType::SKILL;
+	PlayAnimationMontage();
 }
 
-void ABattleCharacter::PlaySkillAnimation()
+void ABattleCharacter::PlayAnimationMontage()
 {
 	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetCharacter->GetActorLocation());
 	SetActorRotation(rotator); //타겟 방향으로 회전
 
-	PlayerAnim->PlaySkillMontage();
+	if(AttackType == EAttackType::ATTACK)
+	{
+		PlayerAnim->PlayAttackMontage();
+	}
+	else if (AttackType == EAttackType::SKILL)
+	{
+		PlayerAnim->PlaySkillMontage();
+	}
 }
 
 void ABattleCharacter::AttackCharacter()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s Attack %s"), *GetName(), *TargetCharacter->GetName());
-	
 	FDamageEvent DamageEvent;
-	TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //타겟 받아서 TakeDamage() 호출
+	if (AttackType == EAttackType::ATTACK)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Attack %s"), *GetName(), *TargetCharacter->GetName());
+		TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //타겟 받아서 TakeDamage() 호출
+	}
+	else if (AttackType == EAttackType::SKILL)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s Skill %s"), *GetName(), *TargetCharacter->GetName());
+		TargetCharacter->TakeDamage(Power * Coefficient, DamageEvent, GetController(), this);
+	}
 
 	//TargetCharacter = nullptr; //공격완료 후 대상 초기화
-}
-
-void ABattleCharacter::SkillCharacter()
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s Skill %s"), *GetName(), *TargetCharacter->GetName());
-
-	FDamageEvent DamageEvent;
-	TargetCharacter->TakeDamage(Power * Coefficient, DamageEvent, GetController(), this);
 }
 
 void ABattleCharacter::ChangeHP(float Damage)

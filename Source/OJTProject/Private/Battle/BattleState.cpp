@@ -153,9 +153,7 @@ void ABattleState::ClickTile(AActor* aActor)
 		{
 			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //공격 가능한 위치인 경우
 			{
-				//스테이트에 따라 공격할 건지 스킬을 쓸 건지 구분
 				AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
-				//SkillTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
 			}
 		}
 		else
@@ -364,10 +362,10 @@ void ABattleState::NextTurn()
 		ClearTileSM(); //TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Current);
 		TurnCount++;
 	}
-	//else
-	//{
-	//	TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
-	//}
+	else
+	{
+		TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
+	}
 		
 	if(bIsPlayerTurn) //플레이어 턴이 된 경우 입력 가능하도록
 	{
@@ -472,16 +470,10 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter)
 {
 	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
+
+	//스테이트에 따라 공격할 건지 스킬을 쓸 건지 구분
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->AttackCharacter();
-
-	AttackTileID = -1;
-
-	MoveTile(StartTile, EndTile, BCharacter);
-}
-void ABattleState::SkillTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter)
-{
-	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
-	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->SkillCharacter();
+	//Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->SkillCharacter();
 
 	AttackTileID = -1;
 

@@ -17,6 +17,13 @@ class OJTPROJECT_API ABattleCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	enum class EAttackType
+	{
+		NONE,
+		ATTACK,
+		SKILL,
+	};
+
 public:
 	// Sets default values for this character's properties
 	ABattleCharacter();
@@ -35,12 +42,11 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetCharacterType(ECharacterType inType);
+	void SetAttackState();
+	void SetSkillState();
 
-	void PlayAttackAnimation();
-	void PlaySkillAnimation();
+	void PlayAnimationMontage();
 	void AttackCharacter();
-	void SkillCharacter(); //스킬을 쓸 땐 노티파이에서 이걸 불러오면 될지도.. 데미지도 다르게 할 수 있고 사운드, 이펙트도 다르게 할 수 있을 듯 함
-	//혹은 함수 새로 안만들고 Enum으로 스테이트를 다르게 하여 나누면 될듯??
 
 	void SetTileLocationID(int onLocID);
 	int32 GetTileLocationID();
@@ -74,6 +80,8 @@ private:
 
 	UPlayerAnimInstance* PlayerAnim;
 	ABattleCharacter* TargetCharacter;
+
+	EAttackType AttackType = EAttackType::NONE;
 
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HPBarWidget;
