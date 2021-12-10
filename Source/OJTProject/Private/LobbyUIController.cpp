@@ -2,6 +2,7 @@
 
 
 #include "LobbyUIController.h"
+#include "LobbyWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "LobbyWidget.h"
 
@@ -24,7 +25,7 @@ void ALobbyUIController::BeginPlay()
 		return;
 	}
 
-	UIWidgetInstance = CreateWidget<UUserWidget>(this, UIWidgetClass);
+	UIWidgetInstance = CreateWidget<ULobbyWidget>(this, UIWidgetClass);
 	if (UIWidgetInstance == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UIWidgetInstance is NULL!"));

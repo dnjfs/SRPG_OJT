@@ -19,6 +19,8 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
+	TSubclassOf<class UGamePlayWidget> GamePlayWidgetClass;
+
 public:
 	ABattlePlayerController();
 	virtual void OnPossess(APawn* aPawn) override;
@@ -28,4 +30,9 @@ public:
 
 private:
 	FInputModeGameAndUI GameAndUIInputMode;
+	//FInputModeGameOnly GameInputMode; 사용하려면 GameInputMode.SetConsumeCaptureMouseDown(false) 해주기
+	FInputModeUIOnly UIInputMode;
+
+	UPROPERTY()
+	class UGamePlayWidget* GamePlayWidgetInstance;
 };

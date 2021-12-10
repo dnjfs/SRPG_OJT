@@ -22,8 +22,8 @@ protected:
 	virtual void Destroyed() override;
 
 	UPROPERTY()
-		TSubclassOf<class UUserWidget> UIWidgetClass;
+		TSubclassOf<class ULobbyWidget> UIWidgetClass;
 
 	UPROPERTY()
-		class UUserWidget* UIWidgetInstance;
+		class ULobbyWidget* UIWidgetInstance;
 };

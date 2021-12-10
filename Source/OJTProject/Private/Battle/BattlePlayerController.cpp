@@ -2,10 +2,17 @@
 
 
 #include "Battle/BattlePlayerController.h"
+#include "UI/GamePlayWidget.h"
 
 ABattlePlayerController::ABattlePlayerController()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ABattlePlayerController::Constructor()"));
+
+	static ConstructorHelpers::FClassFinder<UGamePlayWidget> UI_GAMEPLAY(TEXT("WidgetBlueprint'/Game/UMG/UI_GamePlay.UI_GamePlay_C'"));
+	if (UI_GAMEPLAY.Succeeded())
+	{
+		GamePlayWidgetClass = UI_GAMEPLAY.Class;
+	}
 }
 
 void ABattlePlayerController::PostInitializeComponents()
@@ -26,6 +33,23 @@ void ABattlePlayerController::BeginPlay()
 
 	GameAndUIInputMode.SetHideCursorDuringCapture(false); //클릭 중 마우스 고정 풀기
 	SetInputMode(GameAndUIInputMode); //입력모드 설정해야 로비에서 진입해도 제대로 입력됨
+
+	//위젯 설정
+	GamePlayWidgetInstance = CreateWidget<UGamePlayWidget>(this, GamePlayWidgetClass);
+	GamePlayWidgetInstance->AddToViewport();
+
+	GamePlayWidgetInstance->OnGamePauseDelegate.AddLambda([this]() {
+		if(IsPaused())
+		{
+			SetPause(false);
+			SetInputMode(GameAndUIInputMode);
+		}
+		else
+		{
+			SetPause(true);
+			SetInputMode(UIInputMode); //일시정지 동안엔 게임에 입력 안되도록 UI입력모드로 전환
+		}
+	});
 }
 
 void ABattlePlayerController::SetupInputComponent()
