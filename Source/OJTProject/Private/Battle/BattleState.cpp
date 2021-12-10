@@ -364,6 +364,7 @@ void ABattleState::NextTurn()
 		ClearTileSM(); //TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Current);
 		TurnCount++;
 
+		//턴 카운트를 위젯에 반영
 		//해당 캐릭터의 스킬 UI를 화면에 버튼으로 보여주기
 	}
 	else
