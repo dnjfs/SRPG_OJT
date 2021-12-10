@@ -21,6 +21,8 @@ void UGamePlayWidget::NativeConstruct()
 	{
 		SkillButton->OnClicked.AddDynamic(this, &UGamePlayWidget::OnActiveSkill);
 	}
+
+	BattleState->OnTurnCountDelegate.AddDynamic(this, &UGamePlayWidget::UpdateTurnCount);
 }
 
 void UGamePlayWidget::OnGamePause()
@@ -32,4 +34,9 @@ void UGamePlayWidget::OnGamePause()
 void UGamePlayWidget::OnActiveSkill()
 {
 	BattleState->ActiveSkill();
+}
+
+void UGamePlayWidget::UpdateTurnCount(int TurnCount)
+{
+	UE_LOG(LogTemp, Warning, TEXT("UGamePlayWidget::UpdateTurnCount(%d)"), TurnCount);
 }

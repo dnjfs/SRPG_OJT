@@ -28,6 +28,9 @@ protected:
 	UFUNCTION()
 	void OnActiveSkill();
 
+	UFUNCTION()
+	void UpdateTurnCount(int TurnCount);
+
 protected:
 	UPROPERTY()
 	class UButton* PauseButton;

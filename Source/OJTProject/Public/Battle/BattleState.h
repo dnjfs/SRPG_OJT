@@ -8,6 +8,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "BattleState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTurnCountDelegate, int32, TurnCount);
+
 /**
  * 
  */
@@ -58,6 +60,8 @@ public:
 	TArray<ABattleCharacter*> Player;
 	UPROPERTY()
 	TArray<ABattleCharacter*> Enemy;
+
+	FOnTurnCountDelegate OnTurnCountDelegate;
 
 protected:
 	UPROPERTY(Transient)
