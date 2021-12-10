@@ -503,3 +503,28 @@ void ABattleState::DeleteCharacter(int TileLocID)
 		CharacterTile[IDToIndex(TileLocID)] = nullptr;
 	}
 }
+
+void ABattleState::ActiveSkill()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill Activate"));
+
+	ABattleCharacter* TurnCharacter;
+	if (bIsPlayerTurn)
+	{
+		TurnCharacter = Player[CurrentTurn];
+	}
+	else
+	{
+		TurnCharacter = Enemy[CurrentTurn];
+	}
+
+	//현재 캐릭터의 상태를 스킬로 변경
+	if (TurnCharacter->IsSkillState()) //이미 스킬을 사용하는 상태라면
+	{
+		TurnCharacter->SetAttackState(); //다시 공격 상태로 돌려놓기
+	}
+	else
+	{
+		TurnCharacter->SetSkillState();
+	}
+}

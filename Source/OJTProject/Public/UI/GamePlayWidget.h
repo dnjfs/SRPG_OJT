@@ -25,10 +25,16 @@ protected:
 	UFUNCTION()
 	void OnGamePause();
 
+	UFUNCTION()
+	void OnActiveSkill();
+
 protected:
 	UPROPERTY()
 	class UButton* PauseButton;
+	
+	UPROPERTY()
+	class UButton* SkillButton;
 
 private:
-	//TWeakObjectPtr<class ABattleState> BattleState;
+	TWeakObjectPtr<class ABattleState> BattleState;
 };

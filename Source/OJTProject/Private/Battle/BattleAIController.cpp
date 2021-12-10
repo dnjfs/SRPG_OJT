@@ -49,6 +49,7 @@ void ABattleAIController::SetEndAttackDelegate()
 {
 	Cast<UPlayerAnimInstance>(GetCharacter()->GetMesh()->GetAnimInstance())->OnEndAttack.AddLambda([this]() {
 		BehaviorType = EBehaviorType::NONE; //TargetCharacter = nullptr;
+		Cast<ABattleCharacter>(GetCharacter())->SetAttackState();
 		EndOfAIBehavior();
 	});
 }
@@ -63,10 +64,6 @@ void ABattleAIController::AttackCharacter()
 {
 	BehaviorType = EBehaviorType::ATTACK;
 	//this->TargetCharacter = inTargetCharacter; //캐릭터에서 직접 가지고 있음
-}
-void ABattleAIController::SkillCharacter()
-{
-	BehaviorType = EBehaviorType::SKILL;
 }
 
 bool ABattleAIController::GetNextDest()
@@ -87,15 +84,11 @@ bool ABattleAIController::GetNextDest()
 void ABattleAIController::PostMovement()
 {
 	//이동 완료 상태
-	
+
 	if (BehaviorType == EBehaviorType::ATTACK) //공격하는 행동일 경우
 	{
-		//Attack 상태로 변경하고 애니메이션 실행
-		Cast<ABattleCharacter>(GetCharacter())->SetAttackState();
-	}
-	else if (BehaviorType == EBehaviorType::SKILL) //스킬을 쓰는 행동일 경우
-	{
-		Cast<ABattleCharacter>(GetCharacter())->SetSkillState();
+		//현재 상태에 따라 공격/스킬 애니메이션 실행
+		Cast<ABattleCharacter>(GetCharacter())->PlayAnimationMontage();
 	}
 	else //공격을 할 필요가 없다면 비헤이비어 트리 종료
 	{

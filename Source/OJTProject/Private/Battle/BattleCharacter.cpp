@@ -128,12 +128,20 @@ void ABattleCharacter::SetTargetCharacter(ABattleCharacter* inTarget)
 void ABattleCharacter::SetAttackState()
 {
 	AttackType = EAttackType::ATTACK;
-	PlayAnimationMontage();
+	//PlayAnimationMontage();
 }
 void ABattleCharacter::SetSkillState()
 {
 	AttackType = EAttackType::SKILL;
-	PlayAnimationMontage();
+	//PlayAnimationMontage();
+}
+bool ABattleCharacter::IsSkillState()
+{
+	if(AttackType == EAttackType::SKILL)
+	{
+		return true;
+	}
+	return false;
 }
 
 void ABattleCharacter::PlayAnimationMontage()

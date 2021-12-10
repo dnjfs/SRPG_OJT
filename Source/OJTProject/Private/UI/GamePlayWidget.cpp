@@ -15,11 +15,21 @@ void UGamePlayWidget::NativeConstruct()
 		PauseButton->OnClicked.AddDynamic(this, &UGamePlayWidget::OnGamePause);
 	}
 
-	//BattleState = Cast<ABattleState>(UGameplayStatics::GetGameState(this));
+	BattleState = Cast<ABattleState>(UGameplayStatics::GetGameState(this));
+	SkillButton = Cast<UButton>(GetWidgetFromName(TEXT("btnSkill")));
+	if (SkillButton != nullptr)
+	{
+		SkillButton->OnClicked.AddDynamic(this, &UGamePlayWidget::OnActiveSkill);
+	}
 }
 
 void UGamePlayWidget::OnGamePause()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Pause Clicked!"));
 	OnGamePauseDelegate.Broadcast();
+}
+
+void UGamePlayWidget::OnActiveSkill()
+{
+	BattleState->ActiveSkill();
 }

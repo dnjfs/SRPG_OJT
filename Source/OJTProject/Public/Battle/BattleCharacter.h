@@ -19,7 +19,7 @@ class OJTPROJECT_API ABattleCharacter : public ACharacter
 
 	enum class EAttackType
 	{
-		NONE,
+		//NONE,
 		ATTACK,
 		SKILL,
 	};
@@ -44,6 +44,7 @@ public:
 	void SetCharacterType(ECharacterType inType);
 	void SetAttackState();
 	void SetSkillState();
+	bool IsSkillState();
 
 	void PlayAnimationMontage();
 	void AttackCharacter();
@@ -80,9 +81,9 @@ private:
 	int32 TileLocID = -1; //타일 ID
 
 	UPlayerAnimInstance* PlayerAnim;
-	ABattleCharacter* TargetCharacter; //타겟은 TWeakObjectPtr로 잡는게 나을듯??
+	TWeakObjectPtr<ABattleCharacter> TargetCharacter; //타겟은 TWeakObjectPtr로 잡는게 나을듯??
 
-	EAttackType AttackType = EAttackType::NONE;
+	EAttackType AttackType = EAttackType::ATTACK;
 
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HPBarWidget;

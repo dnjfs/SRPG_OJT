@@ -46,6 +46,9 @@ public:
 	UFUNCTION()
 	void DeleteCharacter(int TileLocID); //BattleCharacter에서 델리게이트로 호출
 
+	UFUNCTION()
+	void ActiveSkill();
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()
