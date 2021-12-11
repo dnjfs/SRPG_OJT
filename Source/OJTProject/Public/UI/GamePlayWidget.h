@@ -33,6 +33,9 @@ protected:
 
 protected:
 	UPROPERTY()
+	class UTextBlock* TurnText;
+
+	UPROPERTY()
 	class UButton* PauseButton;
 	
 	UPROPERTY()
