@@ -164,7 +164,7 @@ void ABattleState::ClickTile(AActor* aActor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTileID, selectedID);
 
-		if (selectedID == PlayerTileID) //현재 플레이어가 서있는 곳을 클릭한 경우
+		if (selectedID == PlayerTileID && TileMap[IDToIndex(selectedID)]->GetTileType() != ETileType::Attack) //현재 플레이어가 서있는 곳을 클릭한 경우
 		{
 			CurrentTileID = -1;
 			AttackTileID = -1;
@@ -235,13 +235,14 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 	TQueue<int> q;
 	q.Enqueue(StartTileID);
 	visited[StartTileID] = 0;
+	TileMap[IDToIndex(StartTileID)]->ChangeTileSM(ETileType::Available); //자기 자신의 위치도 공격가능한 위치에 포함
 
 	int v = -1; //ID임
 	while (!q.IsEmpty())
 	{
 		q.Dequeue(v);
 
-		if(CharacterTile[IDToIndex(v)] == nullptr)
+		if(CharacterTile[IDToIndex(v)] == nullptr || CharacterTile[IDToIndex(v)] == CurrentPlayer)
 		{
 			TileMap[IDToIndex(v)]->ChangeTileSM(ETileType::Available);
 
