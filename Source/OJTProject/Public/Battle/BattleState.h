@@ -56,6 +56,10 @@ public:
 
 	void GameEnd(bool bIsWin);
 
+	void ReadyCharacterSpawn(ECharacterType CType);
+
+	void CharacterSpawn(int SpawnID, ECharacterType CType);
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()
@@ -90,4 +94,8 @@ private:
 
 	bool bIsRunBehavior = false;
 	bool bIsPlayerTurn = true;
+	bool bIsSpawn = false;
+	ECharacterType SpawnType = ECharacterType::NONE;
+
+	class ABattlePlayerController* BPlayerController = nullptr;
 };

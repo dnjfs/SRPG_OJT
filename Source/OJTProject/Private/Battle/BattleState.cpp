@@ -28,6 +28,16 @@ void ABattleState::BeginPlay()
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.AddDynamic(this, &ABattleState::PlayTurn);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.AddDynamic(this, &ABattleState::NextTurn);
 
+
+	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+	{
+		const auto BattlePlayerController = Cast<ABattlePlayerController>(It->Get());
+		if(BattlePlayerController != nullptr)
+		{
+			BPlayerController = BattlePlayerController;
+		}
+	}
+
 	UE_LOG(LogTemp, Error, TEXT("---------- Game Start ----------"));
 	NextTurn(); //첫 턴 시작
 }
@@ -116,6 +126,20 @@ void ABattleState::ClickTile(AActor* aActor)
 	if(bIsRunBehavior) return; //행동중인 경우 클릭 불가
 
 	int selectedID = Cast<ATileCell>(aActor)->GetTileID();
+
+	if(bIsSpawn)
+	{
+		if(CharacterTile[IDToIndex(selectedID)] == nullptr)
+		{
+			CharacterSpawn(selectedID, SpawnType);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Can't spawn this tile : %d"), selectedID);
+		}
+		return;
+	}
+
 	if (TileMap[IDToIndex(selectedID)]->GetTileType() == ETileType::Idle)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't click this tile : %d"), selectedID);
@@ -622,15 +646,7 @@ void ABattleState::GameEnd(bool bIsWin)
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.RemoveAll(this);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.RemoveAll(this);
 	
-	//결과 창 보여주기
-	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
-	{
-		const auto BattlePlayerController = Cast<ABattlePlayerController>(It->Get());
-		if(BattlePlayerController != nullptr)
-		{
-			BattlePlayerController->ShowResultUI(bIsWin, TurnCount);
-		}
-	}
+	BPlayerController->ShowResultUI(bIsWin, TurnCount); //결과 창 보여주기
 
 	//3초 후 로비로 이동
 	FTimerHandle EndTimerHandle;
@@ -639,4 +655,56 @@ void ABattleState::GameEnd(bool bIsWin)
 		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"));
 		
 	}), 3.0f, false);
+}
+
+void ABattleState::ReadyCharacterSpawn(ECharacterType CType)
+{
+	if(bIsSpawn && CType == SpawnType) //똑같은 버튼이 다시 눌린 경우
+	{
+		BPlayerController->ClearSpawnButtonColor();
+		bIsSpawn = false;
+		SpawnType = ECharacterType::NONE;
+	}
+	else
+	{
+		bIsSpawn = true;
+		SpawnType = CType;
+	}
+}
+
+void ABattleState::CharacterSpawn(int SpawnID, ECharacterType CType)
+{
+	int SpawnIndex = IDToIndex(SpawnID);
+	ABattleCharacter* BTChar;
+	if(CType == ECharacterType::PLAYER1)
+	{
+		BTChar = GetWorld()->SpawnActor<ACharacterShort>(TileMap[SpawnIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		BTChar->SetActorLabel("Player" + FString::FromInt(Player.Num()));
+		Player.Add(BTChar);
+	}
+	else if(CType == ECharacterType::PLAYER2)
+	{
+		BTChar = GetWorld()->SpawnActor<ACharacterLong>(TileMap[SpawnIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
+		BTChar->SetActorLabel("Player" + FString::FromInt(Player.Num()));
+		Player.Add(BTChar);
+	}
+	else if(CType == ECharacterType::ENEMY)
+	{
+		BTChar = GetWorld()->SpawnActor<ACharacterEnemy>(TileMap[SpawnIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
+		BTChar->SetActorLabel("Enemy" + FString::FromInt(Enemy.Num()));
+		Enemy.Add(BTChar);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Spawn NONE"));
+		return;
+	}
+
+	BTChar->SetTileLocationID(TileMap[SpawnIndex]->GetTileID());
+	BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
+	CharacterTile[SpawnIndex] = BTChar;
+
+	bIsSpawn = false;
+	SpawnType = ECharacterType::NONE;
+	BPlayerController->ClearSpawnButtonColor();
 }

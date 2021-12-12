@@ -27,6 +27,8 @@ public:
 	virtual void OnPossess(APawn* aPawn) override;
 
 	void ShowResultUI(bool bIsWin, int inTurnCount);
+
+	void ClearSpawnButtonColor();
 	//void OnClickTile();
 	//void OnDragTile();
 	//void OnEndTile();

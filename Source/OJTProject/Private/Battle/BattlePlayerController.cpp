@@ -103,3 +103,8 @@ void ABattlePlayerController::ShowResultUI(bool bIsWin, int inTurnCount)
 	ResultWidgetInstance->AddToViewport();
 	ResultWidgetInstance->SetResultMessage(bIsWin, inTurnCount);
 }
+
+void ABattlePlayerController::ClearSpawnButtonColor()
+{
+	GamePlayWidgetInstance->ClearSpawnButton();
+}

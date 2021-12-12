@@ -16,12 +16,10 @@ class OJTPROJECT_API UGamePlayWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
-	FOnGamePauseDelegate OnGamePauseDelegate;
-	
 protected:
 	virtual void NativeConstruct() override;
 
+public:
 	UFUNCTION()
 	void OnGamePause();
 
@@ -30,6 +28,17 @@ protected:
 
 	UFUNCTION()
 	void UpdateTurnCount(int TurnCount);
+
+	UFUNCTION()
+	void Player1Spawn();
+	UFUNCTION()
+	void Player2Spawn();
+	UFUNCTION()
+	void EnemySpawn();
+	UFUNCTION()
+	void ClearSpawnButton();
+
+	FOnGamePauseDelegate OnGamePauseDelegate;
 
 protected:
 	UPROPERTY()
@@ -40,6 +49,13 @@ protected:
 	
 	UPROPERTY()
 	class UButton* SkillButton;
+
+	UPROPERTY()
+	class UButton* Player1SpawnButton;
+	UPROPERTY()
+	class UButton* Player2SpawnButton;
+	UPROPERTY()
+	class UButton* EnemySpawnButton;
 
 private:
 	TWeakObjectPtr<class ABattleState> BattleState;
