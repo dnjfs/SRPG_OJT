@@ -11,5 +11,5 @@ ACharacterEnemy::ACharacterEnemy()
 	Power = 40;
 	MoveRange = 3;
 	AttackRange = 1;
-	Coefficient = 2.0f;
+	Coefficient = 0.75f;
 }

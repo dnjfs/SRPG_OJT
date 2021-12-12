@@ -19,7 +19,7 @@ class OJTPROJECT_API ABattleState : public AGameStateBase
 	GENERATED_BODY()
 	
 public:
-	~ABattleState() { TileMap.Empty(); } //뭔가 더 해줘야 할 것 같음;
+	~ABattleState() { TileMap.Empty(); }
 
 	virtual void BeginPlay() override;
 	void SpawnTiles();
@@ -29,7 +29,7 @@ public:
 	void ClickTile(AActor* aActor);
 
 	void ClearTileSM(); //타일 스태틱메시 초기화
-	void AvailableTileSM(ABattleCharacter* CurrentPlayer); //선택한 캐릭터가 이동 가능한 타일 표시
+	void AvailableTileSM(ABattleCharacter* CurrentPlayer); //선택한 캐릭터가 이동/공격 가능한 타일 표시
 	void AttackTileSM(ABattleCharacter* CurrentPlayer, int TargetID); //타겟에서 공격 가능한 타일 표시
 
 	int IDToIndex(int inTileID);
@@ -38,6 +38,7 @@ public:
 	void PlayTurn();
 	UFUNCTION()
 	void NextTurn();
+	void PlayEnemyTurn();
 
 	void FindRoute(int StartTile, int EndTile, TArray<FVector>& Route);
 	

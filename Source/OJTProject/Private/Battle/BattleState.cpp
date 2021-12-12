@@ -27,6 +27,7 @@ void ABattleState::BeginPlay()
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.AddDynamic(this, &ABattleState::PlayTurn);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.AddDynamic(this, &ABattleState::NextTurn);
 
+	UE_LOG(LogTemp, Error, TEXT("---------- Game Start ----------"));
 	NextTurn(); //첫 턴 시작
 }
 
@@ -365,22 +366,88 @@ void ABattleState::NextTurn()
 		TurnCount++;
 
 		OnTurnCountDelegate.Broadcast(TurnCount); //턴 카운트를 위젯에 반영
-		
+
+		bIsRunBehavior = false; //플레이어 턴이 된 경우 입력 가능하도록
 		//해당 캐릭터의 스킬 UI를 화면에 버튼으로 보여주기
 	}
 	else
 	{
-		TileMap[IDToIndex(Enemy[CurrentTurn]->GetTileLocationID())]->ChangeTileSM(ETileType::Current);
+		PlayerTileID = Enemy[CurrentTurn]->GetTileLocationID();
+		ClearTileSM();
+
+		PlayEnemyTurn(); //적군 AI 실행
 	}
-		
-	if(bIsPlayerTurn) //플레이어 턴이 된 경우 입력 가능하도록
+}
+
+void ABattleState::PlayEnemyTurn()
+{
+	CurrentTileID = PlayerTileID;
+
+	AvailableTileSM(CharacterTile[IDToIndex(PlayerTileID)]); //적 캐릭터의 위치를 기준으로 이동/공격 가능한 타일 찾기
+
+	TArray<int> enemyTargetTile;
+	TArray<int> enemyMovableTile;
+	for(int i = 0; i < BattleColumn * BattleRow; i++)
 	{
-		bIsRunBehavior = false;
+		if(TileMap[i]->GetTileType() == ETileType::Enemy) //적이 위치한 타일
+		{
+			enemyTargetTile.Add(TileMap[i]->GetTileID());
+		}
+		else if(TileMap[i]->GetTileType() == ETileType::Available) //이동 가능한 타일
+		{
+			enemyMovableTile.Add(TileMap[i]->GetTileID());
+		}
 	}
-	else //적군 턴 시작
+
+	if(enemyTargetTile.Num() != 0) //공격할 상대가 있는 경우
 	{
-		//적군 AI 실행
-		MoveTile(Enemy[CurrentTurn]->GetTileLocationID(), Enemy[CurrentTurn]->GetTileLocationID() - 1, Enemy); //왼쪽으로 한 칸 이동 (임시)
+		UE_LOG(LogTemp, Warning, TEXT("Enemy find target."));
+
+		int randNum = FMath::RandRange(0, enemyTargetTile.Num()-1);
+		AttackTileID = enemyTargetTile[randNum];
+		AttackTileSM(Enemy[CurrentTurn], AttackTileID);
+
+		TArray<int> enemyAttackTile;
+		for(int i = 0; i < BattleColumn * BattleRow; i++)
+		{
+			if(TileMap[i]->GetTileType() == ETileType::Attack) //공격 가능한 타일
+			{
+				UE_LOG(LogTemp, Warning, TEXT("enemyAttackTile push %d"), TileMap[i]->GetTileID());
+				enemyAttackTile.Add(TileMap[i]->GetTileID());
+			}
+		}
+
+		if(enemyAttackTile.Num() != 0) //공격할 수 있는 위치가 있는 경우
+		{
+			int randNum2 = FMath::RandRange(0, enemyAttackTile.Num() - 1);
+			int attackPosID = enemyAttackTile[randNum2];
+			UE_LOG(LogTemp, Warning, TEXT("Enemy attack %d on %d"), AttackTileID, attackPosID);
+
+			int randSkill = FMath::RandRange(0, 9);
+			if(randSkill < 3) //30% 확률로 스킬 사용
+				ActiveSkill();
+			
+			AttackTile(CurrentTileID, attackPosID, Enemy, CharacterTile[IDToIndex(AttackTileID)]); //랜덤한 위치에서 공격
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Enemy can't move."));
+			AttackTileID = -1;
+			MoveTile(CurrentTileID, CurrentTileID, Enemy); //이동 안하기 (턴 넘기기)
+		}
+	}
+	else if(enemyMovableTile.Num() != 0) //이동할 수 있는 경우
+	{
+		int randNum2 = FMath::RandRange(0, enemyMovableTile.Num() - 1);
+		int movePosID = enemyMovableTile[randNum2];
+		MoveTile(CurrentTileID, movePosID, Enemy); //랜덤 위치로 이동
+
+		UE_LOG(LogTemp, Warning, TEXT("Enemy move to %d"), movePosID);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy can't move."));
+		MoveTile(CurrentTileID, CurrentTileID, Enemy); //이동 안하기 (턴 넘기기)
 	}
 }
 
@@ -465,7 +532,10 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //거쳐가야할 벡터 리스트 전달해야함
 
 	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //캐릭터 이동
-	CharacterTile[IDToIndex(StartTileID)] = nullptr; //원래 자리는 공백으로
+	if(StartTileID != EndTileID)
+	{
+		CharacterTile[IDToIndex(StartTileID)] = nullptr; //원래 자리는 공백으로
+	}
 	BCharacter[CurrentTurn]->SetTileLocationID(EndTileID);
 
 	PlayerTileID = -1; //이동 시엔 모든 타일 초기화
@@ -475,7 +545,7 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 
 void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter)
 {
-	CharacterTile[IDToIndex(Player[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
+	CharacterTile[IDToIndex(BCharacter[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
 
 	//스테이트에 따라 공격할 건지 스킬을 쓸 건지 구분
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->AttackCharacter();
