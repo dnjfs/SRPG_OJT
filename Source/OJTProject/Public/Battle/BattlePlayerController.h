@@ -20,10 +20,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	TSubclassOf<class UGamePlayWidget> GamePlayWidgetClass;
+	TSubclassOf<class UResultWidget> ResultWidgetClass;
 
 public:
 	ABattlePlayerController();
 	virtual void OnPossess(APawn* aPawn) override;
+
+	void ShowResultUI(bool bIsWin, int inTurnCount);
 	//void OnClickTile();
 	//void OnDragTile();
 	//void OnEndTile();
@@ -35,4 +38,7 @@ private:
 
 	UPROPERTY()
 	class UGamePlayWidget* GamePlayWidgetInstance;
+
+	UPROPERTY()
+	class UResultWidget* ResultWidgetInstance;
 };

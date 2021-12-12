@@ -54,6 +54,8 @@ public:
 
 	bool GetIsRunBehavior();
 
+	void GameEnd(bool bIsWin);
+
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()

@@ -3,6 +3,7 @@
 
 #include "Battle/BattleState.h"
 #include "Battle/BattleAIController.h"
+#include "Battle/BattlePlayerController.h"
 #include "Map/MapGameInstance.h"
 #include "Map/TurnManager.h"
 
@@ -344,7 +345,15 @@ void ABattleState::NextTurn()
 		UE_LOG(LogTemp, Error, TEXT("---------- Game End ----------"));
 		UE_LOG(LogTemp, Error, TEXT("Turn Count: %d"), TurnCount);
 
-		//결과 창 보여주기
+		if(Player.Num() == 0)
+		{
+			GameEnd(false);
+		}
+		else if(Enemy.Num() == 0)
+		{
+			GameEnd(true);
+		}
+
 		return;
 	}
 
@@ -606,4 +615,28 @@ bool ABattleState::ActiveSkill()
 bool ABattleState::GetIsRunBehavior()
 {
 	return bIsRunBehavior;
+}
+
+void ABattleState::GameEnd(bool bIsWin)
+{
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.RemoveAll(this);
+	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.RemoveAll(this);
+	
+	//결과 창 보여주기
+	for(FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+	{
+		const auto BattlePlayerController = Cast<ABattlePlayerController>(It->Get());
+		if(BattlePlayerController != nullptr)
+		{
+			BattlePlayerController->ShowResultUI(bIsWin, TurnCount);
+		}
+	}
+
+	//3초 후 로비로 이동
+	FTimerHandle EndTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(EndTimerHandle, FTimerDelegate::CreateLambda([this]() {
+
+		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"));
+		
+	}), 3.0f, false);
 }

@@ -3,6 +3,7 @@
 
 #include "Battle/BattlePlayerController.h"
 #include "UI/GamePlayWidget.h"
+#include "UI/ResultWidget.h"
 
 ABattlePlayerController::ABattlePlayerController()
 {
@@ -12,6 +13,12 @@ ABattlePlayerController::ABattlePlayerController()
 	if (UI_GAMEPLAY.Succeeded())
 	{
 		GamePlayWidgetClass = UI_GAMEPLAY.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UResultWidget> UI_RESULT(TEXT("WidgetBlueprint'/Game/UMG/UI_Result.UI_Result_C'"));
+	if(UI_RESULT.Succeeded())
+	{
+		ResultWidgetClass = UI_RESULT.Class;
 	}
 }
 
@@ -88,4 +95,11 @@ void ABattlePlayerController::OnPossess(APawn* aPawn)
 	UE_LOG(LogTemp, Warning, TEXT("ABattlePlayerController::OnPossess: %s"), *aPawn->GetName());
 	Super::OnPossess(aPawn);
 	UE_LOG(LogTemp, Warning, TEXT("2ABattlePlayerController::OnPossess: %s"), *aPawn->GetName());
+}
+
+void ABattlePlayerController::ShowResultUI(bool bIsWin, int inTurnCount)
+{
+	ResultWidgetInstance = CreateWidget<UResultWidget>(this, ResultWidgetClass);
+	ResultWidgetInstance->AddToViewport();
+	ResultWidgetInstance->SetResultMessage(bIsWin, inTurnCount);
 }
