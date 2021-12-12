@@ -576,10 +576,8 @@ void ABattleState::DeleteCharacter(int TileLocID)
 	}
 }
 
-void ABattleState::ActiveSkill()
+bool ABattleState::ActiveSkill()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill Activate"));
-
 	ABattleCharacter* TurnCharacter;
 	if (bIsPlayerTurn)
 	{
@@ -593,10 +591,19 @@ void ABattleState::ActiveSkill()
 	//현재 캐릭터의 상태를 스킬로 변경
 	if (TurnCharacter->IsSkillState()) //이미 스킬을 사용하는 상태라면
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Skill Deactivate"));
 		TurnCharacter->SetAttackState(); //다시 공격 상태로 돌려놓기
+		return false;
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Skill Activate"));
 		TurnCharacter->SetSkillState();
+		return true;
 	}
+}
+
+bool ABattleState::GetIsRunBehavior()
+{
+	return bIsRunBehavior;
 }

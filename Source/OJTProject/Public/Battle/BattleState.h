@@ -50,7 +50,9 @@ public:
 	void DeleteCharacter(int TileLocID); //BattleCharacter에서 델리게이트로 호출
 
 	UFUNCTION()
-	void ActiveSkill();
+	bool ActiveSkill();
+
+	bool GetIsRunBehavior();
 
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;

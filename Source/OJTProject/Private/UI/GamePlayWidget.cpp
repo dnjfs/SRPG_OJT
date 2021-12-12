@@ -37,11 +37,22 @@ void UGamePlayWidget::OnGamePause()
 
 void UGamePlayWidget::OnActiveSkill()
 {
-	BattleState->ActiveSkill();
+	if(!BattleState->GetIsRunBehavior())
+	{
+		if(BattleState->ActiveSkill())
+		{
+			SkillButton->SetBackgroundColor(FLinearColor(1.0f, 0.0f, 0.0f, 1.0f));
+		}
+		else
+		{
+			SkillButton->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+	}
 }
 
 void UGamePlayWidget::UpdateTurnCount(int TurnCount)
 {
+	SkillButton->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 	TurnText->SetText(FText::FromString(TEXT("Turn: ") + FString::FromInt(TurnCount)));
 	UE_LOG(LogTemp, Warning, TEXT("UGamePlayWidget::UpdateTurnCount(%d)"), TurnCount);
 }
