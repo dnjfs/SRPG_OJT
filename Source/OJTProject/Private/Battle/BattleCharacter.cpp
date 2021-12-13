@@ -225,9 +225,4 @@ void ABattleCharacter::DeadCharacter()
 
 	SetLifeSpan(2.0f);
 	OnNotifyDeadDelegate.Broadcast(TileLocID); //타일에서 캐릭터 지우기
-	//아래 함수들을 2초 후에 부를 순 없을까?
-	//GetGameInstance()->GetTimerManager().SetTimer();
-	//SetActorHiddenInGame(true);
-	//SetActorEnableCollision(false);
-	//SetActorTickEnabled(false);
 }

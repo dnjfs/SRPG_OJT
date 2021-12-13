@@ -87,5 +87,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HPBarWidget;
-	class UProgressBar* HPBar; //혹은 캐릭터 위젯 클래스를 만들어서 HP 바뀌면 델리게이트로 이벤트 전달하기?
+	class UProgressBar* HPBar;
 };

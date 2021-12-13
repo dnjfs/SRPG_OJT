@@ -47,20 +47,13 @@ public:
 	FOnTileSelectedDelegate OnTileSelectedDelegate;
 
 private:
-	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Cell;
 
-	UPROPERTY()
 	UStaticMesh* SMIdle;
-	UPROPERTY()
 	UStaticMesh* SMCurrent;
-	UPROPERTY()
 	UStaticMesh* SMSelected;
-	UPROPERTY()
 	UStaticMesh* SMAvailable;
-	UPROPERTY()
 	UStaticMesh* SMEnemy;
-	UPROPERTY()
 	UStaticMesh* SMAttack;
 
 	int32 TileID = -1; //За*10 + ї­
