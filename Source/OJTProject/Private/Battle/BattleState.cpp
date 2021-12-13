@@ -85,40 +85,10 @@ void ABattleState::SpawnTiles()
 
 void ABattleState::SpawnCharacter()
 {
-	int n = 2; //생성할 캐릭터 수
-	for(int i = 0; i < n-1; i++) //근접 캐릭터 생성
-	{
-		int32 locIndex = BattleColumn * i;
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ACharacterShort>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
-		BTChar->SetActorLabel("Player"+FString::FromInt(i));
-		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
-		BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
-		Player.Add(BTChar);
-		CharacterTile[locIndex] = BTChar;
-		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
-	}
-	for (int i = 1; i < n; i++) //원거리 캐릭터 생성
-	{
-		int32 locIndex = BattleColumn * i;
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ACharacterLong>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator::ZeroRotator);
-		BTChar->SetActorLabel("Player" + FString::FromInt(i));
-		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
-		BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
-		Player.Add(BTChar);
-		CharacterTile[locIndex] = BTChar;
-	}
-
-	for (int i = 0; i < n; i++) //적 생성
-	{
-		int32 locIndex = (BattleColumn - 1) + (BattleColumn * i);
-		ABattleCharacter* BTChar = GetWorld()->SpawnActor<ACharacterEnemy>(TileMap[locIndex]->GetTransform().GetLocation() + FVector(0, 0, 100), FRotator(0, 180, 0));
-		BTChar->SetActorLabel("Enemy"+FString::FromInt(i));
-		BTChar->SetTileLocationID(TileMap[locIndex]->GetTileID());
-		BTChar->OnNotifyDeadDelegate.AddDynamic(this, &ABattleState::DeleteCharacter);
-		Enemy.Add(BTChar);
-		CharacterTile[locIndex] = BTChar;
-		//UE_LOG(LogTemp, Warning, TEXT("Character Spawn: %s in %d -> x: %f, y: %f"), *BTChar->GetName(), BTChar->GetTileLocation(), BTChar->GetTransform().GetLocation().X, BTChar->GetTransform().GetLocation().Y);
-	}
+	CharacterSpawn(0, ECharacterType::PLAYER1);
+	CharacterSpawn(10, ECharacterType::PLAYER2);
+	CharacterSpawn(4, ECharacterType::ENEMY);
+	CharacterSpawn(14, ECharacterType::ENEMY);
 }
 
 void ABattleState::ClickTile(AActor* aActor)
@@ -646,8 +616,11 @@ void ABattleState::GameEnd(bool bIsWin)
 {
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.RemoveAll(this);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.RemoveAll(this);
-	
-	BPlayerController->ShowResultUI(bIsWin, TurnCount); //결과 창 보여주기
+
+	if (BPlayerController != nullptr)
+	{
+		BPlayerController->ShowResultUI(bIsWin, TurnCount); //결과 창 보여주기
+	}
 
 	//3초 후 로비로 이동
 	FTimerHandle EndTimerHandle;
@@ -662,7 +635,10 @@ void ABattleState::ReadyCharacterSpawn(ECharacterType CType)
 {
 	if(bIsSpawn && CType == SpawnType) //똑같은 버튼이 다시 눌린 경우
 	{
-		BPlayerController->ClearSpawnButtonColor();
+		if (BPlayerController != nullptr)
+		{
+			BPlayerController->ClearSpawnButtonColor();
+		}
 		bIsSpawn = false;
 		SpawnType = ECharacterType::NONE;
 	}
@@ -707,5 +683,8 @@ void ABattleState::CharacterSpawn(int SpawnID, ECharacterType CType)
 
 	bIsSpawn = false;
 	SpawnType = ECharacterType::NONE;
-	BPlayerController->ClearSpawnButtonColor();
+	if(BPlayerController != nullptr)
+	{
+		BPlayerController->ClearSpawnButtonColor();
+	}
 }
