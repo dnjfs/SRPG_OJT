@@ -9,16 +9,14 @@ void ULobbyWidget::NativeConstruct()
 	Super::NativeConstruct();
 	bIsFocusable = true; //Error: InputMode:UIOnly 방지
 
-	Level1 = Cast<UButton>(GetWidgetFromName(TEXT("btnLevel1")));
-	if (Level1 != nullptr)
+	if (btnLevel1 != nullptr)
 	{
-		Level1->OnClicked.AddDynamic(this, &ULobbyWidget::OnOpenLevel1Clicked); //버튼에 델리게이트 바인딩
+		btnLevel1->OnClicked.AddDynamic(this, &ULobbyWidget::OnOpenLevel1Clicked); //버튼에 델리게이트 바인딩
 	}
 
-	Level2 = Cast<UButton>(GetWidgetFromName(TEXT("btnLevel2")));
-	if (Level2 != nullptr)
+	if (btnLevel2 != nullptr)
 	{
-		Level2->OnClicked.AddDynamic(this, &ULobbyWidget::OnOpenLevel2Clicked); //버튼에 델리게이트 바인딩
+		btnLevel2->OnClicked.AddDynamic(this, &ULobbyWidget::OnOpenLevel2Clicked); //버튼에 델리게이트 바인딩
 	}
 }
 

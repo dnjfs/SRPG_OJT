@@ -25,9 +25,9 @@ protected:
 	virtual void NativeConstruct() override; //BeginPlay()와 비슷한 용도
 
 private:
-	UPROPERTY()
-	class UButton* Level1;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btnLevel1;
 
-	UPROPERTY()
-	class UButton* Level2;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btnLevel2;
 };
