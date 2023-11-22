@@ -35,7 +35,7 @@ public:
 
 private:
 	FInputModeGameAndUI GameAndUIInputMode;
-	//FInputModeGameOnly GameInputMode; »ç¿ëÇÏ·Á¸é GameInputMode.SetConsumeCaptureMouseDown(false) ÇØÁÖ±â
+	//FInputModeGameOnly GameInputMode; ì‚¬ìš©í•˜ë ¤ë©´ GameInputMode.SetConsumeCaptureMouseDown(false) í•´ì£¼ê¸°
 	FInputModeUIOnly UIInputMode;
 
 	UPROPERTY()

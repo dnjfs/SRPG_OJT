@@ -38,10 +38,10 @@ void ABattlePlayerController::BeginPlay()
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
 
-	GameAndUIInputMode.SetHideCursorDuringCapture(false); //Å¬¸¯ Áß ¸¶¿ì½º °íÁ¤ Ç®±â
-	SetInputMode(GameAndUIInputMode); //ÀÔ·Â¸ğµå ¼³Á¤ÇØ¾ß ·Îºñ¿¡¼­ ÁøÀÔÇØµµ Á¦´ë·Î ÀÔ·ÂµÊ
+	GameAndUIInputMode.SetHideCursorDuringCapture(false); //í´ë¦­ ì¤‘ ë§ˆìš°ìŠ¤ ê³ ì • í’€ê¸°
+	SetInputMode(GameAndUIInputMode); //ì…ë ¥ëª¨ë“œ ì„¤ì •í•´ì•¼ ë¡œë¹„ì—ì„œ ì§„ì…í•´ë„ ì œëŒ€ë¡œ ì…ë ¥ë¨
 
-	//À§Á¬ ¼³Á¤
+	//ìœ„ì ¯ ì„¤ì •
 	GamePlayWidgetInstance = CreateWidget<UGamePlayWidget>(this, GamePlayWidgetClass);
 	GamePlayWidgetInstance->AddToViewport();
 
@@ -54,7 +54,7 @@ void ABattlePlayerController::BeginPlay()
 		else
 		{
 			SetPause(true);
-			SetInputMode(UIInputMode); //ÀÏ½ÃÁ¤Áö µ¿¾È¿£ °ÔÀÓ¿¡ ÀÔ·Â ¾ÈµÇµµ·Ï UIÀÔ·Â¸ğµå·Î ÀüÈ¯
+			SetInputMode(UIInputMode); //ì¼ì‹œì •ì§€ ë™ì•ˆì—” ê²Œì„ì— ì…ë ¥ ì•ˆë˜ë„ë¡ UIì…ë ¥ëª¨ë“œë¡œ ì „í™˜
 		}
 	});
 }

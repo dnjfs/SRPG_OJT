@@ -22,7 +22,7 @@ public:
 	void OnOpenLevel2Clicked();
 
 protected:
-	virtual void NativeConstruct() override; //BeginPlay()¿Í ºñ½ÁÇÑ ¿ëµµ
+	virtual void NativeConstruct() override; //BeginPlay()ì™€ ë¹„ìŠ·í•œ ìš©ë„
 
 private:
 	UPROPERTY(meta = (BindWidget))

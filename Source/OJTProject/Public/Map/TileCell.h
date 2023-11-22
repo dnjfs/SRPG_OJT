@@ -56,7 +56,7 @@ private:
 	UStaticMesh* SMEnemy;
 	UStaticMesh* SMAttack;
 
-	int32 TileID = -1; //Çà*10 + ¿­
+	int32 TileID = -1; //í–‰*10 + ì—´
 
 	ETileType TileType = ETileType::Idle;
 };

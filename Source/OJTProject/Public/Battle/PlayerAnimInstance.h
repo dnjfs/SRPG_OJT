@@ -38,8 +38,8 @@ public:
 	void SetIsDead();
 
 public:
-	FOnAttackHitDelegate OnAttackHit; //Ä³¸¯ÅÍ¿¡¼­ »ç¿ë
-	FOnEndAttackDelegate OnEndAttack; //AIÄÁÆ®·Ñ·¯¿¡¼­ »ç¿ë
+	FOnAttackHitDelegate OnAttackHit; //ìºë¦­í„°ì—ì„œ ì‚¬ìš©
+	FOnEndAttackDelegate OnEndAttack; //AIì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ ì‚¬ìš©
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Pawn, Meta=(AllowPrivateAccess=true))

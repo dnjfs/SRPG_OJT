@@ -19,11 +19,11 @@ void ABattleState::BeginPlay()
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Warning, TEXT("ABattleState::BeginPlay"));
 
-	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld()); //ÇöÀç ·¹º§ ÀÌ¸§ ºÒ·¯¿À±â
-	BattleLevel = FCString::Atoi(*(LevelName.Right(1))); //·¹º§ ÀÌ¸§ÀÇ °¡Àå ¿À¸¥ÂÊ ¹øÈ£ °¡Á®¿À±â
+	FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld()); //í˜„ì¬ ë ˆë²¨ ì´ë¦„ ë¶ˆëŸ¬ì˜¤ê¸°
+	BattleLevel = FCString::Atoi(*(LevelName.Right(1))); //ë ˆë²¨ ì´ë¦„ì˜ ê°€ì¥ ì˜¤ë¥¸ìª½ ë²ˆí˜¸ ê°€ì ¸ì˜¤ê¸°
 
-	SpawnTiles(); //Å¸ÀÏ ½ºÆù
-	SpawnCharacter(); //Ä³¸¯ÅÍ ½ºÆù
+	SpawnTiles(); //íƒ€ì¼ ìŠ¤í°
+	SpawnCharacter(); //ìºë¦­í„° ìŠ¤í°
 
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnPlayTurnDelegate.AddDynamic(this, &ABattleState::PlayTurn);
 	Cast<UMapGameInstance>(GetGameInstance())->GetTurnManagerInstance()->OnNextTurnDelegate.AddDynamic(this, &ABattleState::NextTurn);
@@ -39,7 +39,7 @@ void ABattleState::BeginPlay()
 	}
 
 	UE_LOG(LogTemp, Error, TEXT("---------- Game Start ----------"));
-	NextTurn(); //Ã¹ ÅÏ ½ÃÀÛ
+	NextTurn(); //ì²« í„´ ì‹œì‘
 }
 
 void ABattleState::SpawnTiles()
@@ -53,13 +53,13 @@ void ABattleState::SpawnTiles()
 	UE_LOG(LogTemp, Warning, TEXT("Level%d - Row: %d, Column: %d"), BattleLevel, BattleRow, BattleColumn);
 
 	AStaticMeshActor* Floor = nullptr;
-	for (const auto& entity : TActorRange<AStaticMeshActor>(GetWorld())) //Floor Ã£±â
+	for (const auto& entity : TActorRange<AStaticMeshActor>(GetWorld())) //Floor ì°¾ê¸°
 	{
 		if(*entity->GetName() == FString("Floor"))
 			Floor = entity;
 		//UE_LOG(LogTemp, Warning, TEXT("Loaded UStaticMesh : %s"), *entity->GetName());
 	}
-	FVector floorLoc = Floor->GetActorTransform().GetLocation() + FVector(-100.0 * (BattleColumn-1), -100.0 * (BattleRow -1), 50); //ÁÂ»ó´Ü ±âÁØ
+	FVector floorLoc = Floor->GetActorTransform().GetLocation() + FVector(-100.0 * (BattleColumn-1), -100.0 * (BattleRow -1), 50); //ì¢Œìƒë‹¨ ê¸°ì¤€
 	//UE_LOG(LogTemp, Warning, TEXT("Floor - X: %f, Y: %f"), floorLoc.X, floorLoc.Y);
 
 	UWorld* world = GetWorld();
@@ -69,11 +69,11 @@ void ABattleState::SpawnTiles()
 		for (int x = 0; x < BattleColumn; ++x)
 		{
 			ATileCell* tile = world->SpawnActor<ATileCell>(floorLoc + FVector(200 * x, 200 * y, 0), FRotator::ZeroRotator);
-			tile->SetTileID(tID++); //ID ÁöÁ¤
-			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //ºÎ¸ğ ¼³Á¤
-			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //Å¸ÀÏ ÀÌ¸§ º¯°æ
-			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::ClickTile); //µ¨¸®°ÔÀÌÆ® ¿¬°á
-			TileMap.Add(tile); //¾×ÅÍ »ı¼º
+			tile->SetTileID(tID++); //ID ì§€ì •
+			tile->AttachToActor(Floor, FAttachmentTransformRules::KeepWorldTransform); //ë¶€ëª¨ ì„¤ì •
+			tile->SetActorLabel("Tile" + FString::FromInt(y) + FString::FromInt(x)); //íƒ€ì¼ ì´ë¦„ ë³€ê²½
+			tile->OnTileSelectedDelegate.AddDynamic(this, &ABattleState::ClickTile); //ë¸ë¦¬ê²Œì´íŠ¸ ì—°ê²°
+			TileMap.Add(tile); //ì•¡í„° ìƒì„±
 		}
 		tID /= 10;
 		tID++;
@@ -93,7 +93,7 @@ void ABattleState::SpawnCharacter()
 
 void ABattleState::ClickTile(AActor* aActor)
 {
-	if(bIsRunBehavior) return; //Çàµ¿ÁßÀÎ °æ¿ì Å¬¸¯ ºÒ°¡
+	if(bIsRunBehavior) return; //í–‰ë™ì¤‘ì¸ ê²½ìš° í´ë¦­ ë¶ˆê°€
 
 	int selectedID = Cast<ATileCell>(aActor)->GetTileID();
 
@@ -116,9 +116,9 @@ void ABattleState::ClickTile(AActor* aActor)
 		return;
 	}
 
-	if(CurrentTileID == -1) //¼±ÅÃµÈ Å¸ÀÏÀÌ ¾ø´Â °æ¿ì
+	if(CurrentTileID == -1) //ì„ íƒëœ íƒ€ì¼ì´ ì—†ëŠ” ê²½ìš°
 	{
-		if(selectedID != PlayerTileID) //ÇÃ·¹ÀÌ¾î°¡ ¼­ÀÖ´Â °÷À» Å¬¸¯ÇØ¾ß ¼±ÅÃµÊ
+		if(selectedID != PlayerTileID) //í”Œë ˆì´ì–´ê°€ ì„œìˆëŠ” ê³³ì„ í´ë¦­í•´ì•¼ ì„ íƒë¨
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Not on Character%d : %d"), CurrentTurn, selectedID);
 			return;
@@ -128,13 +128,13 @@ void ABattleState::ClickTile(AActor* aActor)
 		TileMap[IDToIndex(CurrentTileID)]->ChangeTileSM(ETileType::Selected); //Cast<ATileCell>(aActor)->ChangeSMSelected();
 		UE_LOG(LogTemp, Warning, TEXT("TileSelect: %d"), CurrentTileID);
 
-		AvailableTileSM(CharacterTile[IDToIndex(PlayerTileID)]); //ÀÌµ¿°¡´ÉÇÑ Å¸ÀÏ Ç¥½Ã + °ø°İ°¡´ÉÇÑ ÀûÀÇ Å¸ÀÏµµ Ç¥½Ã
+		AvailableTileSM(CharacterTile[IDToIndex(PlayerTileID)]); //ì´ë™ê°€ëŠ¥í•œ íƒ€ì¼ í‘œì‹œ + ê³µê²©ê°€ëŠ¥í•œ ì ì˜ íƒ€ì¼ë„ í‘œì‹œ
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TileRelease: %d -> %d"), CurrentTileID, selectedID);
 
-		if (selectedID == PlayerTileID && TileMap[IDToIndex(selectedID)]->GetTileType() != ETileType::Attack) //ÇöÀç ÇÃ·¹ÀÌ¾î°¡ ¼­ÀÖ´Â °÷À» Å¬¸¯ÇÑ °æ¿ì
+		if (selectedID == PlayerTileID && TileMap[IDToIndex(selectedID)]->GetTileType() != ETileType::Attack) //í˜„ì¬ í”Œë ˆì´ì–´ê°€ ì„œìˆëŠ” ê³³ì„ í´ë¦­í•œ ê²½ìš°
 		{
 			CurrentTileID = -1;
 			AttackTileID = -1;
@@ -145,25 +145,25 @@ void ABattleState::ClickTile(AActor* aActor)
 		}
 
 		int targetTileIndex = IDToIndex(selectedID);
-		if (AttackTileID != -1) //Àû±ºÀÌ Å¬¸¯ µÈ »óÅÂ
+		if (AttackTileID != -1) //ì êµ°ì´ í´ë¦­ ëœ ìƒíƒœ
 		{
-			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //°ø°İ °¡´ÉÇÑ À§Ä¡ÀÎ °æ¿ì
+			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Attack) //ê³µê²© ê°€ëŠ¥í•œ ìœ„ì¹˜ì¸ ê²½ìš°
 			{
 				AttackTile(CurrentTileID, selectedID, Player, CharacterTile[IDToIndex(AttackTileID)]);
 			}
 		}
 		else
 		{
-			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Available) //¾Æ¹«µµ ¾øÀ¸¸é ÀÌµ¿
+			if (TileMap[targetTileIndex]->GetTileType() == ETileType::Available) //ì•„ë¬´ë„ ì—†ìœ¼ë©´ ì´ë™
 			{
 				MoveTile(CurrentTileID, selectedID, Player);
 			}
-			else if (CharacterTile[targetTileIndex]->GetIsPlayer()) //´Ù¸¥ ÇÃ·¹ÀÌ¾î°¡ ¼­ÀÖ´Â °÷À» Å¬¸¯ÇÑ °æ¿ì
+			else if (CharacterTile[targetTileIndex]->GetIsPlayer()) //ë‹¤ë¥¸ í”Œë ˆì´ì–´ê°€ ì„œìˆëŠ” ê³³ì„ í´ë¦­í•œ ê²½ìš°
 			{
 				UE_LOG(LogTemp, Warning, TEXT("%d Tile is Occupied"), selectedID);
 				return;
 			}
-			else if (!CharacterTile[targetTileIndex]->GetIsPlayer()) //Àû±ºÀÌ ¼­ÀÖ´Â °÷À» Å¬¸¯ÇÑ °æ¿ì
+			else if (!CharacterTile[targetTileIndex]->GetIsPlayer()) //ì êµ°ì´ ì„œìˆëŠ” ê³³ì„ í´ë¦­í•œ ê²½ìš°
 			{
 				UE_LOG(LogTemp, Warning, TEXT("%d Enemy Attack"), selectedID);
 				AttackTileSM(CharacterTile[IDToIndex(PlayerTileID)], selectedID);
@@ -180,13 +180,13 @@ void ABattleState::ClearTileSM()
 		tile->ChangeTileSM(ETileType::Idle);
 	}
 
-	if (PlayerTileID != -1) //ÇÃ·¹ÀÌ¾î ÅÏÀÌ ¾È³¡³­ °æ¿ì
+	if (PlayerTileID != -1) //í”Œë ˆì´ì–´ í„´ì´ ì•ˆëë‚œ ê²½ìš°
 	{
-		if (AttackTileID != -1) //°ø°İÇÏ·Á ÇÒ ¶§
+		if (AttackTileID != -1) //ê³µê²©í•˜ë ¤ í•  ë•Œ
 		{
 			TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Selected);
 		}
-		else //°ø°İÇÏÁö ¾ÊÀ» ¶§
+		else //ê³µê²©í•˜ì§€ ì•Šì„ ë•Œ
 		{
 			TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Current);
 		}
@@ -205,9 +205,9 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 	TQueue<int> q;
 	q.Enqueue(StartTileID);
 	visited[StartTileID] = 0;
-	TileMap[IDToIndex(StartTileID)]->ChangeTileSM(ETileType::Available); //ÀÚ±â ÀÚ½ÅÀÇ À§Ä¡µµ °ø°İ°¡´ÉÇÑ À§Ä¡¿¡ Æ÷ÇÔ
+	TileMap[IDToIndex(StartTileID)]->ChangeTileSM(ETileType::Available); //ìê¸° ìì‹ ì˜ ìœ„ì¹˜ë„ ê³µê²©ê°€ëŠ¥í•œ ìœ„ì¹˜ì— í¬í•¨
 
-	int v = -1; //IDÀÓ
+	int v = -1; //IDì„
 	while (!q.IsEmpty())
 	{
 		q.Dequeue(v);
@@ -216,8 +216,8 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 		{
 			TileMap[IDToIndex(v)]->ChangeTileSM(ETileType::Available);
 
-			//°ø°İ °¡´ÉÇÑ Ä³¸¯ÅÍ ÀÖ´ÂÁö °Ë»ç
-			int t = v - AttackRange; //ÁÂ
+			//ê³µê²© ê°€ëŠ¥í•œ ìºë¦­í„° ìˆëŠ”ì§€ ê²€ì‚¬
+			int t = v - AttackRange; //ì¢Œ
 			if (v % 10 >= AttackRange && CharacterTile[IDToIndex(t)] != nullptr)
 			{
 				if(CharacterTile[IDToIndex(t)]->GetIsPlayer() != CurrentPlayer->GetIsPlayer())
@@ -225,7 +225,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 					TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Enemy);
 				}
 			}
-			t = v + AttackRange; //¿ì
+			t = v + AttackRange; //ìš°
 			if (v % 10 < BattleColumn - AttackRange && CharacterTile[IDToIndex(t)] != nullptr)
 			{
 				if (CharacterTile[IDToIndex(t)]->GetIsPlayer() != CurrentPlayer->GetIsPlayer())
@@ -233,7 +233,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 					TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Enemy);
 				}
 			}
-			t = v - (10 * AttackRange); //»ó
+			t = v - (10 * AttackRange); //ìƒ
 			if (v / 10 >= AttackRange && CharacterTile[IDToIndex(t)] != nullptr)
 			{
 				if (CharacterTile[IDToIndex(t)]->GetIsPlayer() != CurrentPlayer->GetIsPlayer())
@@ -241,7 +241,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 					TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Enemy);
 				}
 			}
-			t = v + (10 * AttackRange); //ÇÏ
+			t = v + (10 * AttackRange); //í•˜
 			if (v / 10 < BattleRow - AttackRange && CharacterTile[IDToIndex(t)] != nullptr)
 			{
 				if (CharacterTile[IDToIndex(t)]->GetIsPlayer() != CurrentPlayer->GetIsPlayer())
@@ -251,8 +251,8 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 			}
 		}
 
-		//ÀÌµ¿ °¡´ÉÇÑ ¹üÀ§ Ã¼Å©
-		int t = v - 1; //ÁÂ
+		//ì´ë™ ê°€ëŠ¥í•œ ë²”ìœ„ ì²´í¬
+		int t = v - 1; //ì¢Œ
 		if (v % 10 > 0 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -261,7 +261,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 				q.Enqueue(t);
 			}
 		}
-		t = v + 1; //¿ì
+		t = v + 1; //ìš°
 		if (v % 10 < BattleColumn - 1 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -270,7 +270,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 				q.Enqueue(t);
 			}
 		}
-		t = v - 10; //»ó
+		t = v - 10; //ìƒ
 		if (v / 10 > 0 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -279,7 +279,7 @@ void ABattleState::AvailableTileSM(ABattleCharacter* CurrentPlayer)
 				q.Enqueue(t);
 			}
 		}
-		t = v + 10; //ÇÏ
+		t = v + 10; //í•˜
 		if (v / 10 < BattleRow - 1 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -297,25 +297,25 @@ void ABattleState::AttackTileSM(ABattleCharacter* CurrentPlayer, int TargetID)
 
 	int AttackRange = CurrentPlayer->GetAttackRange();
 
-	//Å¸°ÙÀ» °ø°İ °¡´ÉÇÒ ¼ö ÀÖ´Â Å¸ÀÏ °Ë»ç
+	//íƒ€ê²Ÿì„ ê³µê²© ê°€ëŠ¥í•  ìˆ˜ ìˆëŠ” íƒ€ì¼ ê²€ì‚¬
 	int v = AttackTileID;
 
-	int t = v - AttackRange; //ÁÂ
+	int t = v - AttackRange; //ì¢Œ
 	if (v % 10 >= AttackRange && TileMap[IDToIndex(t)]->GetTileType() == ETileType::Available)
 	{
 		TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Attack);
 	}
-	t = v + AttackRange; //¿ì
+	t = v + AttackRange; //ìš°
 	if (v % 10 < BattleColumn - AttackRange && TileMap[IDToIndex(t)]->GetTileType() == ETileType::Available)
 	{
 		TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Attack);
 	}
-	t = v - (10 * AttackRange); //»ó
+	t = v - (10 * AttackRange); //ìƒ
 	if (v / 10 >= AttackRange && TileMap[IDToIndex(t)]->GetTileType() == ETileType::Available)
 	{
 		TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Attack);
 	}
-	t = v + (10 * AttackRange); //ÇÏ
+	t = v + (10 * AttackRange); //í•˜
 	if (v / 10 < BattleRow - AttackRange && TileMap[IDToIndex(t)]->GetTileType() == ETileType::Available)
 	{
 		TileMap[IDToIndex(t)]->ChangeTileSM(ETileType::Attack);
@@ -329,14 +329,14 @@ int ABattleState::IDToIndex(int inTileID)
 
 void ABattleState::PlayTurn()
 {
-	bIsRunBehavior = true; //ÅÏ Á¾·á ¹× Å¸ÀÏ Å¬¸¯ ºñÈ°¼ºÈ­
+	bIsRunBehavior = true; //í„´ ì¢…ë£Œ ë° íƒ€ì¼ í´ë¦­ ë¹„í™œì„±í™”
 }
 
 void ABattleState::NextTurn()
 {
 	if (Player.Num() == 0 || Enemy.Num() == 0)
 	{
-		//°ÔÀÓ Á¾·á
+		//ê²Œì„ ì¢…ë£Œ
 		UE_LOG(LogTemp, Error, TEXT("---------- Game End ----------"));
 		UE_LOG(LogTemp, Error, TEXT("Turn Count: %d"), TurnCount);
 
@@ -352,12 +352,12 @@ void ABattleState::NextTurn()
 		return;
 	}
 
-	if (bIsPlayerTurn && ++CurrentTurn >= Player.Num()) //ÇÃ·¹ÀÌ¾îÀÇ ÅÏ ¸ğµÎ Á¾·á
+	if (bIsPlayerTurn && ++CurrentTurn >= Player.Num()) //í”Œë ˆì´ì–´ì˜ í„´ ëª¨ë‘ ì¢…ë£Œ
 	{
 		bIsPlayerTurn = false;
 		CurrentTurn = 0;
 	}
-	else if(!bIsPlayerTurn && ++CurrentTurn >= Enemy.Num()) //Àû±ºÀÇ ÅÏ ¸ğµÎ Á¾·á
+	else if(!bIsPlayerTurn && ++CurrentTurn >= Enemy.Num()) //ì êµ°ì˜ í„´ ëª¨ë‘ ì¢…ë£Œ
 	{
 		bIsPlayerTurn = true;
 		CurrentTurn = 0;
@@ -369,17 +369,17 @@ void ABattleState::NextTurn()
 		ClearTileSM(); //TileMap[IDToIndex(PlayerTileID)]->ChangeTileSM(ETileType::Current);
 		TurnCount++;
 
-		OnTurnCountDelegate.Broadcast(TurnCount); //ÅÏ Ä«¿îÆ®¸¦ À§Á¬¿¡ ¹İ¿µ
+		OnTurnCountDelegate.Broadcast(TurnCount); //í„´ ì¹´ìš´íŠ¸ë¥¼ ìœ„ì ¯ì— ë°˜ì˜
 
-		bIsRunBehavior = false; //ÇÃ·¹ÀÌ¾î ÅÏÀÌ µÈ °æ¿ì ÀÔ·Â °¡´ÉÇÏµµ·Ï
-		//ÇØ´ç Ä³¸¯ÅÍÀÇ ½ºÅ³ UI¸¦ È­¸é¿¡ ¹öÆ°À¸·Î º¸¿©ÁÖ±â
+		bIsRunBehavior = false; //í”Œë ˆì´ì–´ í„´ì´ ëœ ê²½ìš° ì…ë ¥ ê°€ëŠ¥í•˜ë„ë¡
+		//í•´ë‹¹ ìºë¦­í„°ì˜ ìŠ¤í‚¬ UIë¥¼ í™”ë©´ì— ë²„íŠ¼ìœ¼ë¡œ ë³´ì—¬ì£¼ê¸°
 	}
 	else
 	{
 		PlayerTileID = Enemy[CurrentTurn]->GetTileLocationID();
 		ClearTileSM();
 
-		PlayEnemyTurn(); //Àû±º AI ½ÇÇà
+		PlayEnemyTurn(); //ì êµ° AI ì‹¤í–‰
 	}
 }
 
@@ -387,23 +387,23 @@ void ABattleState::PlayEnemyTurn()
 {
 	CurrentTileID = PlayerTileID;
 
-	AvailableTileSM(CharacterTile[IDToIndex(PlayerTileID)]); //Àû Ä³¸¯ÅÍÀÇ À§Ä¡¸¦ ±âÁØÀ¸·Î ÀÌµ¿/°ø°İ °¡´ÉÇÑ Å¸ÀÏ Ã£±â
+	AvailableTileSM(CharacterTile[IDToIndex(PlayerTileID)]); //ì  ìºë¦­í„°ì˜ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì´ë™/ê³µê²© ê°€ëŠ¥í•œ íƒ€ì¼ ì°¾ê¸°
 
 	TArray<int> enemyTargetTile;
 	TArray<int> enemyMovableTile;
 	for(int i = 0; i < BattleColumn * BattleRow; i++)
 	{
-		if(TileMap[i]->GetTileType() == ETileType::Enemy) //ÀûÀÌ À§Ä¡ÇÑ Å¸ÀÏ
+		if(TileMap[i]->GetTileType() == ETileType::Enemy) //ì ì´ ìœ„ì¹˜í•œ íƒ€ì¼
 		{
 			enemyTargetTile.Add(TileMap[i]->GetTileID());
 		}
-		else if(TileMap[i]->GetTileType() == ETileType::Available) //ÀÌµ¿ °¡´ÉÇÑ Å¸ÀÏ
+		else if(TileMap[i]->GetTileType() == ETileType::Available) //ì´ë™ ê°€ëŠ¥í•œ íƒ€ì¼
 		{
 			enemyMovableTile.Add(TileMap[i]->GetTileID());
 		}
 	}
 
-	if(enemyTargetTile.Num() != 0) //°ø°İÇÒ »ó´ë°¡ ÀÖ´Â °æ¿ì
+	if(enemyTargetTile.Num() != 0) //ê³µê²©í•  ìƒëŒ€ê°€ ìˆëŠ” ê²½ìš°
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Enemy find target."));
 
@@ -414,48 +414,48 @@ void ABattleState::PlayEnemyTurn()
 		TArray<int> enemyAttackTile;
 		for(int i = 0; i < BattleColumn * BattleRow; i++)
 		{
-			if(TileMap[i]->GetTileType() == ETileType::Attack) //°ø°İ °¡´ÉÇÑ Å¸ÀÏ
+			if(TileMap[i]->GetTileType() == ETileType::Attack) //ê³µê²© ê°€ëŠ¥í•œ íƒ€ì¼
 			{
 				UE_LOG(LogTemp, Warning, TEXT("enemyAttackTile push %d"), TileMap[i]->GetTileID());
 				enemyAttackTile.Add(TileMap[i]->GetTileID());
 			}
 		}
 
-		if(enemyAttackTile.Num() != 0) //°ø°İÇÒ ¼ö ÀÖ´Â À§Ä¡°¡ ÀÖ´Â °æ¿ì
+		if(enemyAttackTile.Num() != 0) //ê³µê²©í•  ìˆ˜ ìˆëŠ” ìœ„ì¹˜ê°€ ìˆëŠ” ê²½ìš°
 		{
 			int randNum2 = FMath::RandRange(0, enemyAttackTile.Num() - 1);
 			int attackPosID = enemyAttackTile[randNum2];
 			UE_LOG(LogTemp, Warning, TEXT("Enemy attack %d on %d"), AttackTileID, attackPosID);
 
 			int randSkill = FMath::RandRange(0, 9);
-			if(randSkill < 3) //30% È®·ü·Î ½ºÅ³ »ç¿ë
+			if(randSkill < 3) //30% í™•ë¥ ë¡œ ìŠ¤í‚¬ ì‚¬ìš©
 				ActiveSkill();
 			
-			AttackTile(CurrentTileID, attackPosID, Enemy, CharacterTile[IDToIndex(AttackTileID)]); //·£´ıÇÑ À§Ä¡¿¡¼­ °ø°İ
+			AttackTile(CurrentTileID, attackPosID, Enemy, CharacterTile[IDToIndex(AttackTileID)]); //ëœë¤í•œ ìœ„ì¹˜ì—ì„œ ê³µê²©
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Enemy can't move."));
 			AttackTileID = -1;
-			MoveTile(CurrentTileID, CurrentTileID, Enemy); //ÀÌµ¿ ¾ÈÇÏ±â (ÅÏ ³Ñ±â±â)
+			MoveTile(CurrentTileID, CurrentTileID, Enemy); //ì´ë™ ì•ˆí•˜ê¸° (í„´ ë„˜ê¸°ê¸°)
 		}
 	}
-	else if(enemyMovableTile.Num() != 0) //ÀÌµ¿ÇÒ ¼ö ÀÖ´Â °æ¿ì
+	else if(enemyMovableTile.Num() != 0) //ì´ë™í•  ìˆ˜ ìˆëŠ” ê²½ìš°
 	{
 		int randNum2 = FMath::RandRange(0, enemyMovableTile.Num() - 1);
 		int movePosID = enemyMovableTile[randNum2];
-		MoveTile(CurrentTileID, movePosID, Enemy); //·£´ı À§Ä¡·Î ÀÌµ¿
+		MoveTile(CurrentTileID, movePosID, Enemy); //ëœë¤ ìœ„ì¹˜ë¡œ ì´ë™
 
 		UE_LOG(LogTemp, Warning, TEXT("Enemy move to %d"), movePosID);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Enemy can't move."));
-		MoveTile(CurrentTileID, CurrentTileID, Enemy); //ÀÌµ¿ ¾ÈÇÏ±â (ÅÏ ³Ñ±â±â)
+		MoveTile(CurrentTileID, CurrentTileID, Enemy); //ì´ë™ ì•ˆí•˜ê¸° (í„´ ë„˜ê¸°ê¸°)
 	}
 }
 
-//BFS·Î ±æÃ£±â
+//BFSë¡œ ê¸¸ì°¾ê¸°
 void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 {
 	int visited[100];
@@ -476,14 +476,14 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 		if(v == EndTile)
 			break;
 
-		int t = v-1; //ÁÂ
+		int t = v-1; //ì¢Œ
 		if (v%10 > 0 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v]+1;
 			parent[t] = v;
 			q.Enqueue(t);
 		}
-		t = v+1; //¿ì
+		t = v+1; //ìš°
 		if (v%10 < BattleColumn-1 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -491,14 +491,14 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 			q.Enqueue(t);
 		}
 
-		t = v-10; //»ó
+		t = v-10; //ìƒ
 		if (v/10 > 0 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
 			parent[t] = v;
 			q.Enqueue(t);
 		}
-		t = v+10; //ÇÏ
+		t = v+10; //í•˜
 		if (v/10 < BattleRow-1 && visited[t] > visited[v])
 		{
 			visited[t] = visited[v] + 1;
@@ -518,10 +518,10 @@ void ABattleState::FindRoute(int StartTile, int EndTile, TArray<FVector>& Route)
 	while (ReverseRoute.Num() != 0)
 	{
 		Route.Add(TileMap[IDToIndex(ReverseRoute.Last())]->GetActorLocation());
-		ReverseRoute.RemoveAt(ReverseRoute.Num()-1); //¸¶Áö¸· ¿ø¼Ò Á¦°Å
+		ReverseRoute.RemoveAt(ReverseRoute.Num()-1); //ë§ˆì§€ë§‰ ì›ì†Œ ì œê±°
 	}
 
-	//RouteÀÇ ¸Ç Ã¹¹øÂ°´Â ½ÃÀÛÀ§Ä¡°¡ ÀúÀåµÇ¾î ÀÖ¾î Áö¿öµµ µÉµí
+	//Routeì˜ ë§¨ ì²«ë²ˆì§¸ëŠ” ì‹œì‘ìœ„ì¹˜ê°€ ì €ì¥ë˜ì–´ ìˆì–´ ì§€ì›Œë„ ë ë“¯
 	//for (auto vec : Route)
 	//{
 	//	UE_LOG(LogTemp, Warning, TEXT("(%f %f)"), vec.X, vec.Y);
@@ -533,16 +533,16 @@ void ABattleState::MoveTile(int StartTileID, int EndTileID, TArray<ABattleCharac
 	TArray<FVector> ArrVec;
 	FindRoute(BCharacter[CurrentTurn]->GetTileLocationID(), EndTileID, ArrVec);
 
-	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //°ÅÃÄ°¡¾ßÇÒ º¤ÅÍ ¸®½ºÆ® Àü´ŞÇØ¾ßÇÔ
+	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->MoveCharacter(ArrVec); //ê±°ì³ê°€ì•¼í•  ë²¡í„° ë¦¬ìŠ¤íŠ¸ ì „ë‹¬í•´ì•¼í•¨
 
-	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //Ä³¸¯ÅÍ ÀÌµ¿
+	CharacterTile[IDToIndex(EndTileID)] = CharacterTile[IDToIndex(StartTileID)]; //ìºë¦­í„° ì´ë™
 	if(StartTileID != EndTileID)
 	{
-		CharacterTile[IDToIndex(StartTileID)] = nullptr; //¿ø·¡ ÀÚ¸®´Â °ø¹éÀ¸·Î
+		CharacterTile[IDToIndex(StartTileID)] = nullptr; //ì›ë˜ ìë¦¬ëŠ” ê³µë°±ìœ¼ë¡œ
 	}
 	BCharacter[CurrentTurn]->SetTileLocationID(EndTileID);
 
-	PlayerTileID = -1; //ÀÌµ¿ ½Ã¿£ ¸ğµç Å¸ÀÏ ÃÊ±âÈ­
+	PlayerTileID = -1; //ì´ë™ ì‹œì—” ëª¨ë“  íƒ€ì¼ ì´ˆê¸°í™”
 	CurrentTileID = -1;
 	ClearTileSM();
 }
@@ -551,7 +551,7 @@ void ABattleState::AttackTile(int StartTile, int EndTile, TArray<ABattleCharacte
 {
 	CharacterTile[IDToIndex(BCharacter[CurrentTurn]->GetTileLocationID())]->SetTargetCharacter(TargetCharacter);
 
-	//½ºÅ×ÀÌÆ®¿¡ µû¶ó °ø°İÇÒ °ÇÁö ½ºÅ³À» ¾µ °ÇÁö ±¸ºĞ
+	//ìŠ¤í…Œì´íŠ¸ì— ë”°ë¼ ê³µê²©í•  ê±´ì§€ ìŠ¤í‚¬ì„ ì“¸ ê±´ì§€ êµ¬ë¶„
 	Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->AttackCharacter();
 	//Cast<ABattleAIController>(BCharacter[CurrentTurn]->GetController())->SkillCharacter();
 
@@ -592,11 +592,11 @@ bool ABattleState::ActiveSkill()
 		TurnCharacter = Enemy[CurrentTurn];
 	}
 
-	//ÇöÀç Ä³¸¯ÅÍÀÇ »óÅÂ¸¦ ½ºÅ³·Î º¯°æ
-	if (TurnCharacter->IsSkillState()) //ÀÌ¹Ì ½ºÅ³À» »ç¿ëÇÏ´Â »óÅÂ¶ó¸é
+	//í˜„ì¬ ìºë¦­í„°ì˜ ìƒíƒœë¥¼ ìŠ¤í‚¬ë¡œ ë³€ê²½
+	if (TurnCharacter->IsSkillState()) //ì´ë¯¸ ìŠ¤í‚¬ì„ ì‚¬ìš©í•˜ëŠ” ìƒíƒœë¼ë©´
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Skill Deactivate"));
-		TurnCharacter->SetAttackState(); //´Ù½Ã °ø°İ »óÅÂ·Î µ¹·Á³õ±â
+		TurnCharacter->SetAttackState(); //ë‹¤ì‹œ ê³µê²© ìƒíƒœë¡œ ëŒë ¤ë†“ê¸°
 		return false;
 	}
 	else
@@ -619,10 +619,10 @@ void ABattleState::GameEnd(bool bIsWin)
 
 	if (BPlayerController != nullptr)
 	{
-		BPlayerController->ShowResultUI(bIsWin, TurnCount); //°á°ú Ã¢ º¸¿©ÁÖ±â
+		BPlayerController->ShowResultUI(bIsWin, TurnCount); //ê²°ê³¼ ì°½ ë³´ì—¬ì£¼ê¸°
 	}
 
-	//3ÃÊ ÈÄ ·Îºñ·Î ÀÌµ¿
+	//3ì´ˆ í›„ ë¡œë¹„ë¡œ ì´ë™
 	FTimerHandle EndTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(EndTimerHandle, FTimerDelegate::CreateLambda([this]() {
 
@@ -633,7 +633,7 @@ void ABattleState::GameEnd(bool bIsWin)
 
 void ABattleState::ReadyCharacterSpawn(ECharacterType CType)
 {
-	if(bIsSpawn && CType == SpawnType) //¶È°°Àº ¹öÆ°ÀÌ ´Ù½Ã ´­¸° °æ¿ì
+	if(bIsSpawn && CType == SpawnType) //ë˜‘ê°™ì€ ë²„íŠ¼ì´ ë‹¤ì‹œ ëˆŒë¦° ê²½ìš°
 	{
 		if (BPlayerController != nullptr)
 		{

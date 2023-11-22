@@ -22,12 +22,12 @@ EBTNodeResult::Type UBTTask_MoveToTile::ExecuteTask(UBehaviorTreeComponent& Owne
 	if(!Cast<ABattleAIController>(OwnerComp.GetAIOwner())->GetNextDest())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Finish Move"));
-		Cast<ABattleAIController>(OwnerComp.GetAIOwner())->PostMovement(); //°ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+		Cast<ABattleAIController>(OwnerComp.GetAIOwner())->PostMovement(); //ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
 
-		//FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); //ÀÌµ¿ ¿Ï·á, ÅÂ½ºÅ© Á¾·á
-		return EBTNodeResult::Failed; //ÅÂ½ºÅ©¸¦ ¼öÇàÇßÁö¸¸ ½ÇÆĞ
-		//return EBTNodeResult::Aborted; //ÅÂ½ºÅ© ½ÇÇà Áß¿¡ Áß´Ü
+		//FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); //ì´ë™ ì™„ë£Œ, íƒœìŠ¤í¬ ì¢…ë£Œ
+		return EBTNodeResult::Failed; //íƒœìŠ¤í¬ë¥¼ ìˆ˜í–‰í–ˆì§€ë§Œ ì‹¤íŒ¨
+		//return EBTNodeResult::Aborted; //íƒœìŠ¤í¬ ì‹¤í–‰ ì¤‘ì— ì¤‘ë‹¨
 	}
 
-	return EBTNodeResult::Succeeded; //ÅÂ½ºÅ©¸¦ ¼º°øÀûÀ¸·Î ¼öÇà
+	return EBTNodeResult::Succeeded; //íƒœìŠ¤í¬ë¥¼ ì„±ê³µì ìœ¼ë¡œ ìˆ˜í–‰
 }

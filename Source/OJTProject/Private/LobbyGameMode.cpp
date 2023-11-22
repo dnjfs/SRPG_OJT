@@ -8,5 +8,5 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	PlayerControllerClass = ALobbyUIController::StaticClass();
 
-	//·Îºñ ÀÔÀå ½Ã ¹è°æÀ½¾Ç, ¹è°æÀÌ¹ÌÁö Ãâ·Â
+	//ë¡œë¹„ ì…ì¥ ì‹œ ë°°ê²½ìŒì•…, ë°°ê²½ì´ë¯¸ì§€ ì¶œë ¥
 }

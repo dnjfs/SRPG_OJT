@@ -67,21 +67,21 @@ public:
 
 protected:
 	ECharacterType CharacterType = ECharacterType::NONE;
-	bool bIsPlayer = false; //ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ ¿©ºÎ
+	bool bIsPlayer = false; //í”Œë ˆì´ì–´ ìºë¦­í„° ì—¬ë¶€
 
 	int32 MaxHP = 0;
-	UPROPERTY(Transient, VisibleInstanceOnly) //Transient·Î Á÷·ÄÈ­¿¡¼­ Á¦¿Ü
+	UPROPERTY(Transient, VisibleInstanceOnly) //Transientë¡œ ì§ë ¬í™”ì—ì„œ ì œì™¸
 	int32 CurrentHP = 0;
 	int32 Power = 0;
 	int32 MoveRange = 0;
 	int32 AttackRange = 0;
-	float Coefficient = 0; //½ºÅ³¿¡¼­ °ø°İ·Â °è¼ö
+	float Coefficient = 0; //ìŠ¤í‚¬ì—ì„œ ê³µê²©ë ¥ ê³„ìˆ˜
 
 private:
-	int32 TileLocID = -1; //Å¸ÀÏ ID
+	int32 TileLocID = -1; //íƒ€ì¼ ID
 
 	UPlayerAnimInstance* PlayerAnim;
-	TWeakObjectPtr<ABattleCharacter> TargetCharacter; //Å¸°ÙÀº TWeakObjectPtr·Î Àâ´Â°Ô ³ªÀ»µí??
+	TWeakObjectPtr<ABattleCharacter> TargetCharacter; //íƒ€ê²Ÿì€ TWeakObjectPtrë¡œ ì¡ëŠ”ê²Œ ë‚˜ì„ë“¯??
 
 	EAttackType AttackType = EAttackType::ATTACK;
 

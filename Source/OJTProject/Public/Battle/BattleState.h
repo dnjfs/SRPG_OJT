@@ -28,9 +28,9 @@ public:
 	UFUNCTION()
 	void ClickTile(AActor* aActor);
 
-	void ClearTileSM(); //Å¸ÀÏ ½ºÅÂÆ½¸Ş½Ã ÃÊ±âÈ­
-	void AvailableTileSM(ABattleCharacter* CurrentPlayer); //¼±ÅÃÇÑ Ä³¸¯ÅÍ°¡ ÀÌµ¿/°ø°İ °¡´ÉÇÑ Å¸ÀÏ Ç¥½Ã
-	void AttackTileSM(ABattleCharacter* CurrentPlayer, int TargetID); //Å¸°Ù¿¡¼­ °ø°İ °¡´ÉÇÑ Å¸ÀÏ Ç¥½Ã
+	void ClearTileSM(); //íƒ€ì¼ ìŠ¤íƒœí‹±ë©”ì‹œ ì´ˆê¸°í™”
+	void AvailableTileSM(ABattleCharacter* CurrentPlayer); //ì„ íƒí•œ ìºë¦­í„°ê°€ ì´ë™/ê³µê²© ê°€ëŠ¥í•œ íƒ€ì¼ í‘œì‹œ
+	void AttackTileSM(ABattleCharacter* CurrentPlayer, int TargetID); //íƒ€ê²Ÿì—ì„œ ê³µê²© ê°€ëŠ¥í•œ íƒ€ì¼ í‘œì‹œ
 
 	int IDToIndex(int inTileID);
 
@@ -47,7 +47,7 @@ public:
 	void SkillTile(int StartTile, int EndTile, TArray<ABattleCharacter*>& BCharacter, ABattleCharacter* TargetCharacter);
 
 	UFUNCTION()
-	void DeleteCharacter(int TileLocID); //BattleCharacter¿¡¼­ µ¨¸®°ÔÀÌÆ®·Î È£Ãâ
+	void DeleteCharacter(int TileLocID); //BattleCharacterì—ì„œ ë¸ë¦¬ê²Œì´íŠ¸ë¡œ í˜¸ì¶œ
 
 	UFUNCTION()
 	bool ActiveSkill();
@@ -63,7 +63,7 @@ public:
 	UPROPERTY()
 	TArray<ATileCell*> TileMap;
 	UPROPERTY()
-	TArray<ABattleCharacter*> CharacterTile; //R x C ¹è¿­, Ä³¸¯ÅÍ°¡ ¾øÀ¸¸é nullptr
+	TArray<ABattleCharacter*> CharacterTile; //R x C ë°°ì—´, ìºë¦­í„°ê°€ ì—†ìœ¼ë©´ nullptr
 
 	UPROPERTY()
 	TArray<ABattleCharacter*> Player;
@@ -85,12 +85,12 @@ protected:
 private:
 	struct FOJTLevelData* CurrentLevelData;
 
-	int32 PlayerTileID = -1; //ÇöÀç ÅÏÀÇ ÇÃ·¹ÀÌ¾î°¡ ¼­ÀÖ´Â Å¸ÀÏ
-	int32 CurrentTileID = -1; //ÇÃ·¹ÀÌ¾î ÅÏ¿¡ ¼±ÅÃÇÑ Å¸ÀÏ
-	int32 AttackTileID = -1; //°ø°İÇÒ ´ë»óÀÇ Å¸ÀÏ
+	int32 PlayerTileID = -1; //í˜„ì¬ í„´ì˜ í”Œë ˆì´ì–´ê°€ ì„œìˆëŠ” íƒ€ì¼
+	int32 CurrentTileID = -1; //í”Œë ˆì´ì–´ í„´ì— ì„ íƒí•œ íƒ€ì¼
+	int32 AttackTileID = -1; //ê³µê²©í•  ëŒ€ìƒì˜ íƒ€ì¼
 
-	int32 CurrentTurn = -1; //ÅÏ ºÎ¿©¿ë
-	int32 TurnCount = 0; //ÇÃ·¹ÀÌ¾îÀÇ ÅÏ Ä«¿îÆÃ
+	int32 CurrentTurn = -1; //í„´ ë¶€ì—¬ìš©
+	int32 TurnCount = 0; //í”Œë ˆì´ì–´ì˜ í„´ ì¹´ìš´íŒ…
 
 	bool bIsRunBehavior = false;
 	bool bIsPlayerTurn = true;

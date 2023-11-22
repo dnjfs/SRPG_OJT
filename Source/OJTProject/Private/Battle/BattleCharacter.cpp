@@ -35,12 +35,12 @@ void ABattleCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	CurrentHP = MaxHP; //ÇöÀç HP´Â Ç®ÇÇ·Î
+	CurrentHP = MaxHP; //í˜„ì¬ HPëŠ” í’€í”¼ë¡œ
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
-	auto GameInst = Cast<UMapGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); //»ı¼ºÀÚ¿¡¼­ GetWorld() È£Ãâ ½Ã CDO¸¦ ¸¸µé ¶§ ¿ùµå°¡ ¾ø¾î nullptrÀÌ ¹İÈ¯µÊ
+	auto GameInst = Cast<UMapGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); //ìƒì„±ìì—ì„œ GetWorld() í˜¸ì¶œ ì‹œ CDOë¥¼ ë§Œë“¤ ë•Œ ì›”ë“œê°€ ì—†ì–´ nullptrì´ ë°˜í™˜ë¨
 	if (GameInst == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GetGameInstance() return NULLPTR"));
@@ -59,7 +59,7 @@ void ABattleCharacter::PostInitializeComponents()
 		//UE_LOG(LogTemp, Warning, TEXT("ABattleCharacter::PostInitializeComponents(): Complete Load Asset %s"), *CharacterRow->AMChar->GetName());
 
 		Cast<ABattleAIController>(GetController())->SetEndAttackDelegate();
-		PlayerAnim->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter); //¾Ö´Ô ³ëÆ¼ÆÄÀÌ¿¡¼­ È£Ãâ
+		PlayerAnim->OnAttackHit.AddUObject(this, &ABattleCharacter::AttackCharacter); //ì• ë‹˜ ë…¸í‹°íŒŒì´ì—ì„œ í˜¸ì¶œ
 	}
 	else
 	{
@@ -147,7 +147,7 @@ bool ABattleCharacter::IsSkillState()
 void ABattleCharacter::PlayAnimationMontage()
 {
 	FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetCharacter->GetActorLocation());
-	SetActorRotation(rotator); //Å¸°Ù ¹æÇâÀ¸·Î È¸Àü
+	SetActorRotation(rotator); //íƒ€ê²Ÿ ë°©í–¥ìœ¼ë¡œ íšŒì „
 
 	if(AttackType == EAttackType::ATTACK)
 	{
@@ -165,7 +165,7 @@ void ABattleCharacter::AttackCharacter()
 	if (AttackType == EAttackType::ATTACK)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s Attack %s"), *GetName(), *TargetCharacter->GetName());
-		TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //Å¸°Ù ¹Ş¾Æ¼­ TakeDamage() È£Ãâ
+		TargetCharacter->TakeDamage(Power, DamageEvent, GetController(), this); //íƒ€ê²Ÿ ë°›ì•„ì„œ TakeDamage() í˜¸ì¶œ
 	}
 	else if (AttackType == EAttackType::SKILL)
 	{
@@ -173,7 +173,7 @@ void ABattleCharacter::AttackCharacter()
 		TargetCharacter->TakeDamage(Power * Coefficient, DamageEvent, GetController(), this);
 	}
 
-	//TargetCharacter = nullptr; //°ø°İ¿Ï·á ÈÄ ´ë»ó ÃÊ±âÈ­
+	//TargetCharacter = nullptr; //ê³µê²©ì™„ë£Œ í›„ ëŒ€ìƒ ì´ˆê¸°í™”
 }
 
 void ABattleCharacter::ChangeHP(float Damage)
@@ -183,7 +183,7 @@ void ABattleCharacter::ChangeHP(float Damage)
 		CurrentHP -= Damage;
 		HPBar->SetPercent((float)CurrentHP / MaxHP);
 		
-		//¹ŞÀº µ¥¹ÌÁö UI·Î Ãâ·Â, 1ÃÊ µÚ¿¡ »ç¶óÁöµµ·Ï
+		//ë°›ì€ ë°ë¯¸ì§€ UIë¡œ ì¶œë ¥, 1ì´ˆ ë’¤ì— ì‚¬ë¼ì§€ë„ë¡
 
 		if(CurrentHP <= 0) //HP < KINDA_SMALL_NUMBER
 		{
@@ -224,5 +224,5 @@ void ABattleCharacter::DeadCharacter()
 	PlayerAnim->SetIsDead();
 
 	SetLifeSpan(2.0f);
-	OnNotifyDeadDelegate.Broadcast(TileLocID); //Å¸ÀÏ¿¡¼­ Ä³¸¯ÅÍ Áö¿ì±â
+	OnNotifyDeadDelegate.Broadcast(TileLocID); //íƒ€ì¼ì—ì„œ ìºë¦­í„° ì§€ìš°ê¸°
 }

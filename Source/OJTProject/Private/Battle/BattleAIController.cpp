@@ -63,7 +63,7 @@ void ABattleAIController::MoveCharacter(TArray<FVector> TargetLocation)
 void ABattleAIController::AttackCharacter()
 {
 	BehaviorType = EBehaviorType::ATTACK;
-	//this->TargetCharacter = inTargetCharacter; //Ä³¸¯ÅÍ¿¡¼­ Á÷Á¢ °¡Áö°í ÀÖÀ½
+	//this->TargetCharacter = inTargetCharacter; //ìºë¦­í„°ì—ì„œ ì§ì ‘ ê°€ì§€ê³  ìˆìŒ
 }
 
 bool ABattleAIController::GetNextDest()
@@ -83,14 +83,14 @@ bool ABattleAIController::GetNextDest()
 
 void ABattleAIController::PostMovement()
 {
-	//ÀÌµ¿ ¿Ï·á »óÅÂ
+	//ì´ë™ ì™„ë£Œ ìƒíƒœ
 
-	if (BehaviorType == EBehaviorType::ATTACK) //°ø°İÇÏ´Â Çàµ¿ÀÏ °æ¿ì
+	if (BehaviorType == EBehaviorType::ATTACK) //ê³µê²©í•˜ëŠ” í–‰ë™ì¼ ê²½ìš°
 	{
-		//ÇöÀç »óÅÂ¿¡ µû¶ó °ø°İ/½ºÅ³ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà
+		//í˜„ì¬ ìƒíƒœì— ë”°ë¼ ê³µê²©/ìŠ¤í‚¬ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰
 		Cast<ABattleCharacter>(GetCharacter())->PlayAnimationMontage();
 	}
-	else //°ø°İÀ» ÇÒ ÇÊ¿ä°¡ ¾ø´Ù¸é ºñÇìÀÌºñ¾î Æ®¸® Á¾·á
+	else //ê³µê²©ì„ í•  í•„ìš”ê°€ ì—†ë‹¤ë©´ ë¹„í—¤ì´ë¹„ì–´ íŠ¸ë¦¬ ì¢…ë£Œ
 	{
 		EndOfAIBehavior();
 	}
